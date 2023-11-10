@@ -9,6 +9,6 @@ type AssistantObject struct {
 	Model        string              `json:"model"`
 	Instructions string              `json:"instructions,omitempty"`
 	Tools        []*OpenAiTool       `json:"tools,omitempty"`
-	FileIDs      []*OpenAiAttachFile `json:"file_ids,omitempty"`
+	FileIDs      []*OpenAiFileObject `json:"file_ids,omitempty"`
 	Metadata     OpenAiMetaData      `json:"metadata"`
 }

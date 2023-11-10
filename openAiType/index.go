@@ -20,7 +20,7 @@ func (OpenAiTool *OpenAiTool) ValidateFunctionCalling() error {
 	return nil
 }
 
-type OpenAiAttachFile struct {
+type OpenAiFileObject struct {
 	ID        string `json:"id"`
 	Object    string `json:"object"`
 	Bytes     int    `json:"bytes"`

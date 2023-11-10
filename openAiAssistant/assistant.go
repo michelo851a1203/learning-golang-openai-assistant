@@ -12,6 +12,7 @@ import (
 type AssistantImpl struct {
 	ApiKey        string
 	CreateRequest openAiType.CreateAssistantRequest
+	UpdateRequest openAiType.UpdateAssistantRequest
 	AssistantId   string
 }
 
@@ -62,7 +63,7 @@ func (assistantImpl *AssistantImpl) Update() (
 	*openAiType.AssistantObject,
 	error,
 ) {
-	requestInfo, err := json.Marshal(assistantImpl.CreateRequest)
+	requestInfo, err := json.Marshal(assistantImpl.UpdateRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -81,9 +82,9 @@ func (assistantImpl *AssistantImpl) Update() (
 	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	createAssistantClient := &http.Client{}
+	updateAssistantClient := &http.Client{}
 
-	response, err := createAssistantClient.Do(request)
+	response, err := updateAssistantClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -119,9 +120,9 @@ func (assistantImpl *AssistantImpl) Delete() (
 	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	createAssistantClient := &http.Client{}
+	deleteAssistantClient := &http.Client{}
 
-	response, err := createAssistantClient.Do(request)
+	response, err := deleteAssistantClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -157,9 +158,9 @@ func (assistantImpl *AssistantImpl) ListAll() (
 	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	createAssistantClient := &http.Client{}
+	assistantClient := &http.Client{}
 
-	response, err := createAssistantClient.Do(request)
+	response, err := assistantClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -195,9 +196,9 @@ func (assistantImpl *AssistantImpl) Detail() (
 	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	createAssistantClient := &http.Client{}
+	detailAssistantClient := &http.Client{}
 
-	response, err := createAssistantClient.Do(request)
+	response, err := detailAssistantClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
