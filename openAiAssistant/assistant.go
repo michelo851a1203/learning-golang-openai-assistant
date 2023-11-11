@@ -16,7 +16,7 @@ type AssistantImpl struct {
 	AssistantId   string
 }
 
-func (assistantImpl *AssistantImpl) Create() (
+func (assistantImpl *AssistantImpl) CreateAssistant() (
 	*openAiType.AssistantObject,
 	error,
 ) {
@@ -59,7 +59,7 @@ func (assistantImpl *AssistantImpl) Create() (
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) Update() (
+func (assistantImpl *AssistantImpl) ModifyAssistant() (
 	*openAiType.AssistantObject,
 	error,
 ) {
@@ -102,7 +102,7 @@ func (assistantImpl *AssistantImpl) Update() (
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) Delete() (
+func (assistantImpl *AssistantImpl) DeleteAssistant() (
 	*openAiType.DeleteAssistantResponse,
 	error,
 ) {
@@ -140,7 +140,7 @@ func (assistantImpl *AssistantImpl) Delete() (
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) ListAll() (
+func (assistantImpl *AssistantImpl) GetAssistantList() (
 	*openAiType.OpenAiListAssistantResponse,
 	error,
 ) {
@@ -178,7 +178,7 @@ func (assistantImpl *AssistantImpl) ListAll() (
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) Detail() (
+func (assistantImpl *AssistantImpl) GetAssistant() (
 	*openAiType.AssistantObject,
 	error,
 ) {

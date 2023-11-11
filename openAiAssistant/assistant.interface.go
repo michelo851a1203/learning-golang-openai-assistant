@@ -3,9 +3,9 @@ package openAiAssistant
 import "testf/openAiType"
 
 type Assistant interface {
-	Create() (*openAiType.AssistantObject, error)
-	Update() (*openAiType.AssistantObject, error)
-	Delete() (*openAiType.DeleteAssistantResponse, error)
-	ListAll() (*openAiType.OpenAiListAssistantResponse, error)
-	Detail() (*openAiType.AssistantObject, error)
+	CreateAssistant() (*openAiType.AssistantObject, error)
+	ModifyAssistant() (*openAiType.AssistantObject, error)
+	DeleteAssistant() (*openAiType.DeleteAssistantResponse, error)
+	GetAssistantList() (*openAiType.OpenAiListAssistantResponse, error)
+	GetAssistant() (*openAiType.AssistantObject, error)
 }

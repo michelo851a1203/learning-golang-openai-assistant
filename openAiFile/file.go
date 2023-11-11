@@ -18,7 +18,7 @@ type OpenAiFileImpl struct {
 	Purpose      string
 }
 
-func (openAiFileImpl *OpenAiFileImpl) ListAll() (
+func (openAiFileImpl *OpenAiFileImpl) GetFileList() (
 	*openAiType.ListFileResponse,
 	error,
 ) {
