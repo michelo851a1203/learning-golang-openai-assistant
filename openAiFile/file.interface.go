@@ -1,11 +1,15 @@
 package openAiFile
 
-import "testf/openAiType"
+import (
+	"os"
+	"testf/openAiType"
+	"testf/openAiType/openAiFilePurpose"
+)
 
 type OpenAiFile interface {
 	GetFileList() (*openAiType.ListFileResponse, error)
-	UploadFile() (*openAiType.OpenAiFileObject, error)
-	DeleteFile() (*openAiType.DeleteFileResponse, error)
-	GetFile() (*openAiType.OpenAiFileObject, error)
-	GetFileContent() (string, error)
+	UploadFile(purpose openAiFilePurpose.PurposeStatus, preparedFile *os.File) (*openAiType.OpenAiFileObject, error)
+	DeleteFile(fileID string) (*openAiType.DeleteFileResponse, error)
+	GetFile(fileID string) (*openAiType.OpenAiFileObject, error)
+	GetFileContent(fileID string) (string, error)
 }

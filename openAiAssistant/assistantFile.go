@@ -1,6 +1,7 @@
 package openAiAssistant
 
 import (
+	"bytes"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -9,18 +10,25 @@ import (
 )
 
 type AssistantFileImpl struct {
-	ApiKey      string
-	AssistantID string
+	ApiKey string
 }
 
-func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile() (
-	*openAiType.OpenAiListAssistantResponse,
+func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile(
+	assistantID string,
+	createRequest *openAiType.CreateFileAssistantRequest,
+) (
+	*openAiType.OpenAiAssistantFileResponse,
 	error,
 ) {
+	requestInfo, err := json.Marshal(createRequest)
+	if err != nil {
+		return nil, err
+	}
+
 	request, err := http.NewRequest(
 		http.MethodPost,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s/files", assistantFileImpl.AssistantID),
-		nil,
+		fmt.Sprintf("https://api.openai.com/v1/assistants/%s/files", assistantID),
+		bytes.NewBuffer(requestInfo),
 	)
 
 	if err != nil {
@@ -31,9 +39,9 @@ func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile() (
 	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantFileImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	assistantClient := &http.Client{}
+	assistantFileClient := &http.Client{}
 
-	response, err := assistantClient.Do(request)
+	response, err := assistantFileClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -45,19 +53,26 @@ func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile() (
 		return nil, err
 	}
 
-	result := &openAiType.OpenAiListAssistantResponse{}
+	result := &openAiType.OpenAiAssistantFileResponse{}
 	json.Unmarshal(body, result)
 
 	return result, nil
 }
 
-func (assistantFileImpl *AssistantFileImpl) GetAssistantFile() (
-	*openAiType.OpenAiListAssistantResponse,
+func (assistantFileImpl *AssistantFileImpl) GetAssistantFile(
+	assistantID string,
+	fileID string,
+) (
+	*openAiType.OpenAiAssistantFileResponse,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s/files", assistantFileImpl.AssistantID),
+		fmt.Sprintf(
+			"https://api.openai.com/v1/assistants/%s/files/%s",
+			assistantID,
+			fileID,
+		),
 		nil,
 	)
 
@@ -69,9 +84,9 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFile() (
 	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantFileImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	assistantClient := &http.Client{}
+	assistantFileClient := &http.Client{}
 
-	response, err := assistantClient.Do(request)
+	response, err := assistantFileClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -83,19 +98,26 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFile() (
 		return nil, err
 	}
 
-	result := &openAiType.OpenAiListAssistantResponse{}
+	result := &openAiType.OpenAiAssistantFileResponse{}
 	json.Unmarshal(body, result)
 
 	return result, nil
 }
 
-func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile() (
-	*openAiType.OpenAiListAssistantResponse,
+func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile(
+	assistantID string,
+	fileID string,
+) (
+	*openAiType.OpenAiAssistantFileDeleteResponse,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodDelete,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s/files", assistantFileImpl.AssistantID),
+		fmt.Sprintf(
+			"https://api.openai.com/v1/assistants/%s/files/%s",
+			assistantID,
+			fileID,
+		),
 		nil,
 	)
 
@@ -107,9 +129,9 @@ func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile() (
 	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantFileImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	assistantClient := &http.Client{}
+	assistantFileDeleteClient := &http.Client{}
 
-	response, err := assistantClient.Do(request)
+	response, err := assistantFileDeleteClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -121,19 +143,21 @@ func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile() (
 		return nil, err
 	}
 
-	result := &openAiType.OpenAiListAssistantResponse{}
+	result := &openAiType.OpenAiAssistantFileDeleteResponse{}
 	json.Unmarshal(body, result)
 
 	return result, nil
 }
 
-func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList() (
-	*openAiType.OpenAiListAssistantResponse,
+func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList(
+	assistantID string,
+) (
+	*openAiType.OpenAiAssistantFileListResponse,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s/files", assistantFileImpl.AssistantID),
+		fmt.Sprintf("https://api.openai.com/v1/assistants/%s/files", assistantID),
 		nil,
 	)
 
@@ -159,7 +183,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList() (
 		return nil, err
 	}
 
-	result := &openAiType.OpenAiListAssistantResponse{}
+	result := &openAiType.OpenAiAssistantFileListResponse{}
 	json.Unmarshal(body, result)
 
 	return result, nil

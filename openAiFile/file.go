@@ -9,13 +9,11 @@ import (
 	"net/http"
 	"os"
 	"testf/openAiType"
+	"testf/openAiType/openAiFilePurpose"
 )
 
 type OpenAiFileImpl struct {
-	ApiKey       string
-	FileID       string
-	PreparedFile *os.File
-	Purpose      string
+	ApiKey string
 }
 
 func (openAiFileImpl *OpenAiFileImpl) GetFileList() (
@@ -56,29 +54,29 @@ func (openAiFileImpl *OpenAiFileImpl) GetFileList() (
 
 }
 
-func (openAiFileImpl *OpenAiFileImpl) UploadFile() (
+func (openAiFileImpl *OpenAiFileImpl) UploadFile(
+	purpose openAiFilePurpose.PurposeStatus,
+	preparedFile *os.File,
+) (
 	*openAiType.OpenAiFileObject,
 	error,
 ) {
-
-	currentFile := openAiFileImpl.PreparedFile
-
 	var requestBody bytes.Buffer
 	multipartWriter := multipart.NewWriter(&requestBody)
 	defer multipartWriter.Close()
 
 	// file
-	fileWriter, err := multipartWriter.CreateFormFile("file", currentFile.Name())
+	fileWriter, err := multipartWriter.CreateFormFile("file", preparedFile.Name())
 	if err != nil {
 		return nil, err
 	}
 
-	_, err = io.Copy(fileWriter, currentFile)
+	_, err = io.Copy(fileWriter, preparedFile)
 	if err != nil {
 		return nil, err
 	}
 	// purpose
-	err = multipartWriter.WriteField("purpose", openAiFileImpl.Purpose)
+	err = multipartWriter.WriteField("purpose", string(purpose))
 
 	if err != nil {
 		return nil, err
@@ -117,13 +115,13 @@ func (openAiFileImpl *OpenAiFileImpl) UploadFile() (
 	return result, nil
 }
 
-func (openAiFileImpl *OpenAiFileImpl) DeleteFile() (
+func (openAiFileImpl *OpenAiFileImpl) DeleteFile(fileID string) (
 	*openAiType.DeleteFileResponse,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodDelete,
-		fmt.Sprintf("https://api.openai.com/v1/files/%s", openAiFileImpl.FileID),
+		fmt.Sprintf("https://api.openai.com/v1/files/%s", fileID),
 		nil,
 	)
 
@@ -154,13 +152,13 @@ func (openAiFileImpl *OpenAiFileImpl) DeleteFile() (
 	return result, nil
 }
 
-func (openAiFileImpl *OpenAiFileImpl) GetFile() (
+func (openAiFileImpl *OpenAiFileImpl) GetFile(fileID string) (
 	*openAiType.OpenAiFileObject,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/files/%s", openAiFileImpl.FileID),
+		fmt.Sprintf("https://api.openai.com/v1/files/%s", fileID),
 		nil,
 	)
 
@@ -191,10 +189,10 @@ func (openAiFileImpl *OpenAiFileImpl) GetFile() (
 	return result, nil
 }
 
-func (openAiFileImpl *OpenAiFileImpl) GetFileContent() (string, error) {
+func (openAiFileImpl *OpenAiFileImpl) GetFileContent(fileID string) (string, error) {
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/files/%s/content", openAiFileImpl.FileID),
+		fmt.Sprintf("https://api.openai.com/v1/files/%s/content", fileID),
 		nil,
 	)
 
