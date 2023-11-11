@@ -10,17 +10,16 @@ import (
 )
 
 type AssistantImpl struct {
-	ApiKey        string
-	CreateRequest openAiType.CreateAssistantRequest
-	UpdateRequest openAiType.UpdateAssistantRequest
-	AssistantId   string
+	ApiKey string
 }
 
-func (assistantImpl *AssistantImpl) CreateAssistant() (
+func (assistantImpl *AssistantImpl) CreateAssistant(
+	createRequest *openAiType.CreateAssistantRequest,
+) (
 	*openAiType.AssistantObject,
 	error,
 ) {
-	requestInfo, err := json.Marshal(assistantImpl.CreateRequest)
+	requestInfo, err := json.Marshal(createRequest)
 	if err != nil {
 		return nil, err
 	}
@@ -59,18 +58,21 @@ func (assistantImpl *AssistantImpl) CreateAssistant() (
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) ModifyAssistant() (
+func (assistantImpl *AssistantImpl) ModifyAssistant(
+	assistantID string,
+	updateRequest *openAiType.UpdateAssistantRequest,
+) (
 	*openAiType.AssistantObject,
 	error,
 ) {
-	requestInfo, err := json.Marshal(assistantImpl.UpdateRequest)
+	requestInfo, err := json.Marshal(updateRequest)
 	if err != nil {
 		return nil, err
 	}
 
 	request, err := http.NewRequest(
 		http.MethodPost,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s", assistantImpl.AssistantId),
+		fmt.Sprintf("https://api.openai.com/v1/assistants/%s", assistantID),
 		bytes.NewBuffer(requestInfo),
 	)
 
@@ -102,13 +104,13 @@ func (assistantImpl *AssistantImpl) ModifyAssistant() (
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) DeleteAssistant() (
+func (assistantImpl *AssistantImpl) DeleteAssistant(assistantID string) (
 	*openAiType.DeleteAssistantResponse,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodDelete,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s", assistantImpl.AssistantId),
+		fmt.Sprintf("https://api.openai.com/v1/assistants/%s", assistantID),
 		nil,
 	)
 
@@ -178,13 +180,13 @@ func (assistantImpl *AssistantImpl) GetAssistantList() (
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) GetAssistant() (
+func (assistantImpl *AssistantImpl) GetAssistant(assistantID string) (
 	*openAiType.AssistantObject,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s", assistantImpl.AssistantId),
+		fmt.Sprintf("https://api.openai.com/v1/assistants/%s", assistantID),
 		nil,
 	)
 
