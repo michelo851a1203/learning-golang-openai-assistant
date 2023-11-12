@@ -116,7 +116,7 @@ func (openAiFileImpl *OpenAiFileImpl) UploadFile(
 }
 
 func (openAiFileImpl *OpenAiFileImpl) DeleteFile(fileID string) (
-	*openAiType.DeleteFileResponse,
+	*openAiType.DeleteResponse,
 	error,
 ) {
 	request, err := http.NewRequest(
@@ -146,7 +146,7 @@ func (openAiFileImpl *OpenAiFileImpl) DeleteFile(fileID string) (
 		return nil, err
 	}
 
-	result := &openAiType.DeleteFileResponse{}
+	result := &openAiType.DeleteResponse{}
 	json.Unmarshal(body, result)
 
 	return result, nil

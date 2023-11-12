@@ -108,7 +108,7 @@ func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile(
 	assistantID string,
 	fileID string,
 ) (
-	*openAiType.OpenAiAssistantFileDeleteResponse,
+	*openAiType.DeleteResponse,
 	error,
 ) {
 	request, err := http.NewRequest(

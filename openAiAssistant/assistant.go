@@ -105,7 +105,7 @@ func (assistantImpl *AssistantImpl) ModifyAssistant(
 }
 
 func (assistantImpl *AssistantImpl) DeleteAssistant(assistantID string) (
-	*openAiType.DeleteAssistantResponse,
+	*openAiType.DeleteResponse,
 	error,
 ) {
 	request, err := http.NewRequest(
@@ -136,7 +136,7 @@ func (assistantImpl *AssistantImpl) DeleteAssistant(assistantID string) (
 		return nil, err
 	}
 
-	result := &openAiType.DeleteAssistantResponse{}
+	result := &openAiType.DeleteResponse{}
 	json.Unmarshal(body, result)
 
 	return result, nil

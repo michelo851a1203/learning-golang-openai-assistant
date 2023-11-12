@@ -30,3 +30,9 @@ type OpenAiFileObject struct {
 }
 
 type OpenAiMetaData map[string]string
+
+type DeleteResponse struct {
+	ID      string `json:"id"`
+	Object  string `json:"object"`
+	Deleted bool   `json:"deleted"`
+}
