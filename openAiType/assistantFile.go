@@ -1,6 +1,6 @@
 package openAiType
 
-type OpenAiAssistantFileResponse struct {
+type AssistantFileObject struct {
 	ID          string `json:"id"`
 	Object      string `json:"object"`
 	CreatedAt   int64  `json:"created_at"`

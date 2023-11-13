@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"net/url"
+	"reflect"
 	"testf/openAiType"
 )
 
@@ -17,7 +19,7 @@ func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile(
 	assistantID string,
 	createRequest *openAiType.CreateFileAssistantRequest,
 ) (
-	*openAiType.OpenAiAssistantFileResponse,
+	*openAiType.AssistantFileObject,
 	error,
 ) {
 	requestInfo, err := json.Marshal(createRequest)
@@ -53,7 +55,7 @@ func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile(
 		return nil, err
 	}
 
-	result := &openAiType.OpenAiAssistantFileResponse{}
+	result := &openAiType.AssistantFileObject{}
 	json.Unmarshal(body, result)
 
 	return result, nil
@@ -63,7 +65,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFile(
 	assistantID string,
 	fileID string,
 ) (
-	*openAiType.OpenAiAssistantFileResponse,
+	*openAiType.AssistantFileObject,
 	error,
 ) {
 	request, err := http.NewRequest(
@@ -98,7 +100,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFile(
 		return nil, err
 	}
 
-	result := &openAiType.OpenAiAssistantFileResponse{}
+	result := &openAiType.AssistantFileObject{}
 	json.Unmarshal(body, result)
 
 	return result, nil
@@ -143,7 +145,7 @@ func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile(
 		return nil, err
 	}
 
-	result := &openAiType.OpenAiAssistantFileDeleteResponse{}
+	result := &openAiType.DeleteResponse{}
 	json.Unmarshal(body, result)
 
 	return result, nil
@@ -151,13 +153,36 @@ func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile(
 
 func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList(
 	assistantID string,
+	listRequest *openAiType.QueryListRequest,
 ) (
-	*openAiType.OpenAiAssistantFileListResponse,
+	*openAiType.ListResponse[openAiType.AssistantFileObject],
 	error,
 ) {
+	queryString := ""
+	if listRequest != nil {
+		reflectValue := reflect.ValueOf(listRequest)
+		reflectType := reflectValue.Type()
+		queryStringValues := url.Values{}
+
+		if reflectValue.Kind() != reflect.Struct {
+			return nil, fmt.Errorf("listRequest is not struct")
+		}
+
+		for i := 0; i < reflectValue.NumField(); i++ {
+			fieldKey := reflectType.Field(i).Name
+			fieldValue := reflectValue.Field(i).Interface()
+			queryStringValues.Add(fieldKey, fmt.Sprintf("%v", fieldValue))
+		}
+		queryString = fmt.Sprintf("?%s", queryStringValues.Encode())
+	}
+
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s/files", assistantID),
+		fmt.Sprintf(
+			"https://api.openai.com/v1/assistants/%s/files%s",
+			assistantID,
+			queryString,
+		),
 		nil,
 	)
 
@@ -183,7 +208,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList(
 		return nil, err
 	}
 
-	result := &openAiType.OpenAiAssistantFileListResponse{}
+	result := &openAiType.ListResponse[openAiType.AssistantFileObject]{}
 	json.Unmarshal(body, result)
 
 	return result, nil

@@ -2,19 +2,21 @@ package openAiType
 
 import (
 	"errors"
-	"testf/openAiType/openAiToolType"
+	"testf/openAiType/listOrder"
+	"testf/openAiType/openAiListObject"
+	"testf/openAiType/openAiTool"
 )
 
 type FunctionCallingObject struct {
 }
 
 type OpenAiTool struct {
-	Type     openAiToolType.OpenAiToolType `json:"type"`
-	Function *FunctionCallingObject        `json:"function,omitempty"`
+	Type     openAiTool.Tool        `json:"type"`
+	Function *FunctionCallingObject `json:"function,omitempty"`
 }
 
 func (OpenAiTool *OpenAiTool) ValidateFunctionCalling() error {
-	if OpenAiTool.Type != openAiToolType.FunctionCalling && OpenAiTool == nil {
+	if OpenAiTool.Type != openAiTool.FunctionCalling && OpenAiTool == nil {
 		return errors.New("OpenAiTool.Type is not function calling")
 	}
 	return nil
@@ -35,4 +37,23 @@ type DeleteResponse struct {
 	ID      string `json:"id"`
 	Object  string `json:"object"`
 	Deleted bool   `json:"deleted"`
+}
+
+type ListResult interface {
+	AssistantObject | AssistantFileObject | OpenAiMessagesObject
+}
+
+type ListResponse[T ListResult] struct {
+	Object  openAiListObject.ObjectStatus `json:"object"`
+	Data    []*T                          `json:"data"`
+	FirstID string                        `json:"first_id"`
+	LastID  string                        `json:"last_id"`
+	HasMore bool                          `json:"has_more"`
+}
+
+type QueryListRequest struct {
+	Limit  int                 `json:"limit,omitempty"`
+	Order  listOrder.ListOrder `json:"order,omitempty"`
+	After  string              `json:"after,omitempty"`
+	Before string              `json:"before,omitempty"`
 }

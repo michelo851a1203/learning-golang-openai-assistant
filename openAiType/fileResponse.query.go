@@ -1,6 +1,8 @@
 package openAiType
 
+import "testf/openAiType/openAiListObject"
+
 type ListFileResponse struct {
-	Data   []OpenAiFileObject `json:"data"`
-	Object string             `json:"object"`
+	Data   []OpenAiFileObject            `json:"data"`
+	Object openAiListObject.ObjectStatus `json:"object"`
 }

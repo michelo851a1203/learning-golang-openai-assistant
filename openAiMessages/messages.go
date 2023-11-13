@@ -1,4 +1,4 @@
-package openAiAssistant
+package openAiMessages
 
 import (
 	"bytes"
@@ -11,14 +11,15 @@ import (
 	"testf/openAiType"
 )
 
-type AssistantImpl struct {
+type MessagesImpl struct {
 	ApiKey string
 }
 
-func (assistantImpl *AssistantImpl) CreateAssistant(
-	createRequest *openAiType.CreateAssistantRequest,
+func (MessagesImpl *MessagesImpl) CreateMessages(
+	threadID string,
+	createRequest *openAiType.CreateMessagesRequest,
 ) (
-	*openAiType.AssistantObject,
+	*openAiType.OpenAiMessagesObject,
 	error,
 ) {
 	requestInfo, err := json.Marshal(createRequest)
@@ -28,7 +29,7 @@ func (assistantImpl *AssistantImpl) CreateAssistant(
 
 	request, err := http.NewRequest(
 		http.MethodPost,
-		"https://api.openai.com/v1/assistants",
+		fmt.Sprintf("https://api.openai.com/v1/threads/%s/messages", threadID),
 		bytes.NewBuffer(requestInfo),
 	)
 
@@ -37,12 +38,12 @@ func (assistantImpl *AssistantImpl) CreateAssistant(
 	}
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantImpl.ApiKey))
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", MessagesImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	createAssistantClient := &http.Client{}
+	createMessagesClient := &http.Client{}
 
-	response, err := createAssistantClient.Do(request)
+	response, err := createMessagesClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -54,17 +55,18 @@ func (assistantImpl *AssistantImpl) CreateAssistant(
 		return nil, err
 	}
 
-	result := &openAiType.AssistantObject{}
+	result := &openAiType.OpenAiMessagesObject{}
 	json.Unmarshal(body, result)
 
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) ModifyAssistant(
-	assistantID string,
-	updateRequest *openAiType.UpdateAssistantRequest,
+func (MessagesImpl *MessagesImpl) ModifyMessages(
+	threadID string,
+	messagesID string,
+	updateRequest *openAiType.UpdateMessagesRequest,
 ) (
-	*openAiType.AssistantObject,
+	*openAiType.OpenAiMessagesObject,
 	error,
 ) {
 	requestInfo, err := json.Marshal(updateRequest)
@@ -74,7 +76,11 @@ func (assistantImpl *AssistantImpl) ModifyAssistant(
 
 	request, err := http.NewRequest(
 		http.MethodPost,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s", assistantID),
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/messages/%s",
+			threadID,
+			messagesID,
+		),
 		bytes.NewBuffer(requestInfo),
 	)
 
@@ -83,12 +89,12 @@ func (assistantImpl *AssistantImpl) ModifyAssistant(
 	}
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantImpl.ApiKey))
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", MessagesImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	updateAssistantClient := &http.Client{}
+	updateMessagesClient := &http.Client{}
 
-	response, err := updateAssistantClient.Do(request)
+	response, err := updateMessagesClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -100,54 +106,17 @@ func (assistantImpl *AssistantImpl) ModifyAssistant(
 		return nil, err
 	}
 
-	result := &openAiType.AssistantObject{}
+	result := &openAiType.OpenAiMessagesObject{}
 	json.Unmarshal(body, result)
 
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) DeleteAssistant(assistantID string) (
-	*openAiType.DeleteResponse,
-	error,
-) {
-	request, err := http.NewRequest(
-		http.MethodDelete,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s", assistantID),
-		nil,
-	)
-
-	if err != nil {
-		return nil, err
-	}
-
-	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantImpl.ApiKey))
-	request.Header.Add("OpenAI-Beta", "assistants=v1")
-
-	deleteAssistantClient := &http.Client{}
-
-	response, err := deleteAssistantClient.Do(request)
-	if err != nil {
-		return nil, err
-	}
-	defer response.Body.Close()
-
-	body, err := io.ReadAll(response.Body)
-
-	if err != nil {
-		return nil, err
-	}
-
-	result := &openAiType.DeleteResponse{}
-	json.Unmarshal(body, result)
-
-	return result, nil
-}
-
-func (assistantImpl *AssistantImpl) GetAssistantList(
+func (MessagesImpl *MessagesImpl) GetMessagesList(
+	threadID string,
 	listRequest *openAiType.QueryListRequest,
 ) (
-	*openAiType.ListResponse[openAiType.AssistantObject],
+	*openAiType.ListResponse[openAiType.OpenAiMessagesObject],
 	error,
 ) {
 	queryString := ""
@@ -170,7 +139,11 @@ func (assistantImpl *AssistantImpl) GetAssistantList(
 
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/assistants%s", queryString),
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/messages%s",
+			threadID,
+			queryString,
+		),
 		nil,
 	)
 
@@ -179,12 +152,12 @@ func (assistantImpl *AssistantImpl) GetAssistantList(
 	}
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantImpl.ApiKey))
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", MessagesImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	assistantClient := &http.Client{}
+	MessagesClient := &http.Client{}
 
-	response, err := assistantClient.Do(request)
+	response, err := MessagesClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -196,19 +169,19 @@ func (assistantImpl *AssistantImpl) GetAssistantList(
 		return nil, err
 	}
 
-	result := &openAiType.ListResponse[openAiType.AssistantObject]{}
+	result := &openAiType.ListResponse[openAiType.OpenAiMessagesObject]{}
 	json.Unmarshal(body, result)
 
 	return result, nil
 }
 
-func (assistantImpl *AssistantImpl) GetAssistant(assistantID string) (
-	*openAiType.AssistantObject,
+func (MessagesImpl *MessagesImpl) GetMessages(MessagesID string) (
+	*openAiType.MessagesObject,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/assistants/%s", assistantID),
+		fmt.Sprintf("https://api.openai.com/v1/Messagess/%s", MessagesID),
 		nil,
 	)
 
@@ -217,12 +190,12 @@ func (assistantImpl *AssistantImpl) GetAssistant(assistantID string) (
 	}
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", assistantImpl.ApiKey))
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", MessagesImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
-	detailAssistantClient := &http.Client{}
+	detailMessagesClient := &http.Client{}
 
-	response, err := detailAssistantClient.Do(request)
+	response, err := detailMessagesClient.Do(request)
 	if err != nil {
 		return nil, err
 	}
@@ -234,7 +207,7 @@ func (assistantImpl *AssistantImpl) GetAssistant(assistantID string) (
 		return nil, err
 	}
 
-	result := &openAiType.AssistantObject{}
+	result := &openAiType.MessagesObject{}
 	json.Unmarshal(body, result)
 
 	return result, nil

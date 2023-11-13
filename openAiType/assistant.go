@@ -10,5 +10,5 @@ type AssistantObject struct {
 	Instructions string              `json:"instructions,omitempty"`
 	Tools        []*OpenAiTool       `json:"tools,omitempty"`
 	FileIDs      []*OpenAiFileObject `json:"file_ids,omitempty"`
-	Metadata     OpenAiMetaData      `json:"metadata"`
+	Metadata     *OpenAiMetaData     `json:"metadata"`
 }

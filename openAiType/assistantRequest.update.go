@@ -7,5 +7,5 @@ type UpdateAssistantRequest struct {
 	Instructions string              `json:"instructions,omitempty"`
 	Tools        []*OpenAiTool       `json:"tools,omitempty"`
 	FileIds      []*OpenAiFileObject `json:"file_ids,omitempty"`
-	Metadata     OpenAiMetaData      `json:"metadata,omitempty"`
+	Metadata     *OpenAiMetaData     `json:"metadata,omitempty"`
 }
