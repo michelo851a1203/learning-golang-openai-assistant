@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"reflect"
+	"testf/openAiType"
 )
 
 type ThreadRunImpl struct {
@@ -15,9 +16,10 @@ type ThreadRunImpl struct {
 }
 
 func (ThreadRunImpl *ThreadRunImpl) CreateRun(
+	threadID string,
 	createRequest *openAiType.CreateThreadRunRequest,
 ) (
-	*openAiType.ThreadRunObject,
+	*openAiType.OpenAiRunObject,
 	error,
 ) {
 	requestInfo, err := json.Marshal(createRequest)
@@ -27,7 +29,10 @@ func (ThreadRunImpl *ThreadRunImpl) CreateRun(
 
 	request, err := http.NewRequest(
 		http.MethodPost,
-		"https://api.openai.com/v1/ThreadRuns",
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/runs",
+			threadID,
+		),
 		bytes.NewBuffer(requestInfo),
 	)
 
@@ -53,17 +58,18 @@ func (ThreadRunImpl *ThreadRunImpl) CreateRun(
 		return nil, err
 	}
 
-	result := &openAiType.ThreadRunObject{}
+	result := &openAiType.OpenAiRunObject{}
 	json.Unmarshal(body, result)
 
 	return result, nil
 }
 
 func (ThreadRunImpl *ThreadRunImpl) ModifyRun(
-	ThreadRunID string,
+	threadID string,
+	runID string,
 	updateRequest *openAiType.UpdateThreadRunRequest,
 ) (
-	*openAiType.ThreadRunObject,
+	*openAiType.OpenAiRunObject,
 	error,
 ) {
 	requestInfo, err := json.Marshal(updateRequest)
@@ -73,7 +79,12 @@ func (ThreadRunImpl *ThreadRunImpl) ModifyRun(
 
 	request, err := http.NewRequest(
 		http.MethodPost,
-		fmt.Sprintf("https://api.openai.com/v1/ThreadRuns/%s", ThreadRunID),
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/runs/%s",
+			threadID,
+			runID,
+		),
+
 		bytes.NewBuffer(requestInfo),
 	)
 
@@ -99,16 +110,17 @@ func (ThreadRunImpl *ThreadRunImpl) ModifyRun(
 		return nil, err
 	}
 
-	result := &openAiType.ThreadRunObject{}
+	result := &openAiType.OpenAiRunObject{}
 	json.Unmarshal(body, result)
 
 	return result, nil
 }
 
 func (ThreadRunImpl *ThreadRunImpl) GetRunList(
+	threadID string,
 	listRequest *openAiType.QueryListRequest,
 ) (
-	*openAiType.ListResponse[openAiType.ThreadRunObject],
+	*openAiType.ListResponse[openAiType.OpenAiRunObject],
 	error,
 ) {
 	queryString := ""
@@ -131,7 +143,11 @@ func (ThreadRunImpl *ThreadRunImpl) GetRunList(
 
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/ThreadRuns%s", queryString),
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/runs%s",
+			threadID,
+			queryString,
+		),
 		nil,
 	)
 
@@ -157,19 +173,24 @@ func (ThreadRunImpl *ThreadRunImpl) GetRunList(
 		return nil, err
 	}
 
-	result := &openAiType.ListResponse[openAiType.ThreadRunObject]{}
+	result := &openAiType.ListResponse[openAiType.OpenAiRunObject]{}
 	json.Unmarshal(body, result)
 
 	return result, nil
 }
 
-func (ThreadRunImpl *ThreadRunImpl) GetRun(ThreadRunID string) (
-	*openAiType.ThreadRunObject,
+func (ThreadRunImpl *ThreadRunImpl) GetRun(threadID, runID string) (
+	*openAiType.OpenAiRunObject,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/ThreadRuns/%s", ThreadRunID),
+
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/runs/%s",
+			threadID,
+			runID,
+		),
 		nil,
 	)
 
@@ -195,7 +216,53 @@ func (ThreadRunImpl *ThreadRunImpl) GetRun(ThreadRunID string) (
 		return nil, err
 	}
 
-	result := &openAiType.ThreadRunObject{}
+	result := &openAiType.OpenAiRunObject{}
+	json.Unmarshal(body, result)
+
+	return result, nil
+}
+
+func (ThreadRunImpl *ThreadRunImpl) CancelRun(
+	threadID string,
+	runID string,
+) (
+	*openAiType.OpenAiRunObject,
+	error,
+) {
+
+	request, err := http.NewRequest(
+		http.MethodPost,
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/runs/%s/cancel",
+			threadID,
+			runID,
+		),
+		nil,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", ThreadRunImpl.ApiKey))
+	request.Header.Add("OpenAI-Beta", "assistants=v1")
+
+	createThreadRunClient := &http.Client{}
+
+	response, err := createThreadRunClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := &openAiType.OpenAiRunObject{}
 	json.Unmarshal(body, result)
 
 	return result, nil
