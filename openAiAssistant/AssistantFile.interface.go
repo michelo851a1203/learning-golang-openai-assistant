@@ -6,5 +6,5 @@ type AssistantFile interface {
 	CreateAssistantFile(assistantID string, createRequest *openAiType.CreateFileAssistantRequest) (*openAiType.AssistantFileObject, error)
 	GetAssistantFile(assistantID string, fileID string) (*openAiType.AssistantFileObject, error)
 	DeleteAssistantFile(assistantID string, fileID string) (*openAiType.DeleteResponse, error)
-	GetAssistantFileList(assistantID string) (*openAiType.ListResponse[openAiType.AssistantFileObject], error)
+	GetAssistantFileList(assistantID string, listRequest *openAiType.QueryListRequest) (*openAiType.ListResponse[openAiType.AssistantFileObject], error)
 }

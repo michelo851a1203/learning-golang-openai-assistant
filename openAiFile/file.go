@@ -16,14 +16,20 @@ type OpenAiFileImpl struct {
 	ApiKey string
 }
 
-func (openAiFileImpl *OpenAiFileImpl) GetFileList() (
+func (openAiFileImpl *OpenAiFileImpl) GetFileList(
+	purpose string,
+) (
 	*openAiType.ListFileResponse,
 	error,
 ) {
+	queryString := ""
+	if purpose != "" {
+		queryString = "?purpose=" + purpose
+	}
 
 	request, err := http.NewRequest(
 		http.MethodGet,
-		"https://api.openai.com/v1/files",
+		fmt.Sprintf("https://api.openai.com/v1/files%s", queryString),
 		nil,
 	)
 

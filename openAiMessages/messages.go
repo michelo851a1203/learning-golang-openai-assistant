@@ -175,13 +175,16 @@ func (MessagesImpl *MessagesImpl) GetMessagesList(
 	return result, nil
 }
 
-func (MessagesImpl *MessagesImpl) GetMessages(MessagesID string) (
-	*openAiType.MessagesObject,
+func (MessagesImpl *MessagesImpl) GetMessages(
+	threadID string,
+	MessagesID string,
+) (
+	*openAiType.OpenAiMessagesObject,
 	error,
 ) {
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/Messagess/%s", MessagesID),
+		fmt.Sprintf("https://api.openai.com/v1/threads/%s/messages%s", threadID, MessagesID),
 		nil,
 	)
 
@@ -207,7 +210,7 @@ func (MessagesImpl *MessagesImpl) GetMessages(MessagesID string) (
 		return nil, err
 	}
 
-	result := &openAiType.MessagesObject{}
+	result := &openAiType.OpenAiMessagesObject{}
 	json.Unmarshal(body, result)
 
 	return result, nil

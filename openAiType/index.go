@@ -40,7 +40,7 @@ type DeleteResponse struct {
 }
 
 type ListResult interface {
-	AssistantObject | AssistantFileObject | OpenAiMessagesObject
+	AssistantObject | AssistantFileObject | OpenAiMessagesObject | OpenAiMessagesFileObject
 }
 
 type ListResponse[T ListResult] struct {
