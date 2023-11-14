@@ -7,9 +7,13 @@ import (
 	"os/signal"
 	"sync"
 	"syscall"
+	"testf/openAiAssistant"
 	"testf/openAiFile"
 	"testf/openAiType"
 	"testf/openAiType/openAiFilePurpose"
+	"testf/openAiType/openAiModel"
+	"testf/openAiType/openAiTool"
+	"testf/trainingParameters"
 
 	_ "github.com/joho/godotenv/autoload"
 )
@@ -17,9 +21,8 @@ import (
 var filePool *sync.Pool
 
 func main() {
-
 	apiKey := os.Getenv("API_KEY")
-	// assistantImpl := openAiAssistant.AssistantImpl{ApiKey: apiKey}
+	assistantImpl := openAiAssistant.AssistantImpl{ApiKey: apiKey}
 	// assistantFileImpl := openAiAssistant.AssistantFileImpl{ApiKey: apiKey}
 	openAiFileImpl := openAiFile.OpenAiFileImpl{ApiKey: apiKey}
 	// threadsImpl := openaiThreads.ThreadsImpl{ApiKey: apiKey}
@@ -32,7 +35,7 @@ func main() {
 		panic(err)
 	}
 
-	openAiFileChan := make(chan *openAiType.OpenAiFileObject)
+	openAiFileChan := make(chan *openAiType.OpenAiFileObject, 5)
 	fileWaitGroup := sync.WaitGroup{}
 	fileWaitGroup.Add(len(fileInfo))
 	for _, info := range fileInfo {
@@ -78,15 +81,36 @@ func main() {
 		},
 	}
 
-	// go func() {
-	// 	request := openAiType.CreateAssistantRequest{
-	// 		Model:        openAiModel.Gpt4TurboPreview,
-	// 		Name:         &trainingParameters.AssistantName,
-	// 		Description:  &trainingParameters.Description,
-	// 		Instructions: &trainingParameters.Instruction,
-	// 	}
-	//
-	// }()
+	go func(api *openAiAssistant.AssistantImpl) {
+		poolFileMap := filePool.Get().(map[string]*openAiType.OpenAiFileObject)
+		defer filePool.Put(poolFileMap)
+		openAiFileList := []*openAiType.OpenAiFileObject{}
+
+		for _, openAiFile := range poolFileMap {
+			openAiFileList = append(openAiFileList, openAiFile)
+		}
+
+		request := openAiType.CreateAssistantRequest{
+			Model:        openAiModel.Gpt4TurboPreview,
+			Name:         &trainingParameters.AssistantName,
+			Instructions: &trainingParameters.Instruction,
+			Tools: []*openAiType.OpenAiTool{
+				{
+					Type: openAiTool.Retrieval,
+				},
+			},
+			FileIds: openAiFileList,
+		}
+		assistant, err := api.CreateAssistant(&request)
+		if err != nil {
+			fmt.Printf("創建助理發生錯誤 : [%s]\n", err.Error())
+			fmt.Println("================")
+			return
+		}
+		fmt.Println("創建助理成功：================")
+		fmt.Println(assistant)
+		fmt.Println("================")
+	}(&assistantImpl)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGQUIT)

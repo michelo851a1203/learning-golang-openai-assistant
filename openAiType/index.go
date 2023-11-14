@@ -1,7 +1,6 @@
 package openAiType
 
 import (
-	"errors"
 	"testf/openAiType/listOrder"
 	"testf/openAiType/openAiListObject"
 	"testf/openAiType/openAiTool"
@@ -24,11 +23,16 @@ type OpenAiTool struct {
 	Function *FunctionCallingObject `json:"function,omitempty"`
 }
 
-func (OpenAiTool *OpenAiTool) ValidateFunctionCalling() error {
-	if OpenAiTool.Type != openAiTool.FunctionCalling && OpenAiTool == nil {
-		return errors.New("OpenAiTool.Type is not function calling")
+func (tool *OpenAiTool) checkValid() bool {
+	switch tool.Type {
+	case openAiTool.CodeInterpreter:
+		return tool.Function == nil
+	case openAiTool.Retrieval:
+		return tool.Function == nil
+	case openAiTool.FunctionCalling:
+		return tool.Function != nil
 	}
-	return nil
+	return false
 }
 
 type OpenAiFileObject struct {

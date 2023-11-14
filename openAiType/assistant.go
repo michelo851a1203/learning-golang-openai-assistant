@@ -1,5 +1,7 @@
 package openAiType
 
+import "fmt"
+
 type AssistantObject struct {
 	ID           string              `json:"id"`
 	Object       string              `json:"object"`
@@ -11,4 +13,20 @@ type AssistantObject struct {
 	Tools        []*OpenAiTool       `json:"tools,omitempty"`
 	FileIDs      []*OpenAiFileObject `json:"file_ids,omitempty"`
 	Metadata     *OpenAiMetaData     `json:"metadata"`
+}
+
+func (assistantObject AssistantObject) String() string {
+	return fmt.Sprintf(
+		"ID: %s, Object: %s, CreatedAt: %d, Name: %v, Description: %v, Model: %s, Instructions: %v, Tools: %v, FileIDs: %v, Metadata: %v",
+		assistantObject.ID,
+		assistantObject.Object,
+		assistantObject.CreatedAt,
+		assistantObject.Name,
+		assistantObject.Description,
+		assistantObject.Model,
+		assistantObject.Instructions,
+		assistantObject.Tools,
+		assistantObject.FileIDs,
+		assistantObject.Metadata,
+	)
 }
