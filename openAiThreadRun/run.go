@@ -364,3 +364,115 @@ func (threadRunImpl *ThreadRunImpl) CreateThreadAndRun(
 	return result, nil
 
 }
+
+func (threadRunImpl *ThreadRunImpl) GetRunStep(
+	threadID, runID, stepID string,
+) (
+	*openAiType.OpenAiRunObject,
+	error,
+) {
+	request, err := http.NewRequest(
+		http.MethodGet,
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/runs/%s/steps/%s",
+			threadID,
+			runID,
+			stepID,
+		),
+		nil,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", threadRunImpl.ApiKey))
+	request.Header.Add("OpenAI-Beta", "assistants=v1")
+
+	createThreadRunClient := &http.Client{}
+
+	response, err := createThreadRunClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := &openAiType.OpenAiRunObject{}
+	json.Unmarshal(body, result)
+
+	return result, nil
+
+}
+
+func (threadRunImpl *ThreadRunImpl) GetRunStepList(
+	threadID,
+	runID string,
+	listRequest *openAiType.QueryListRequest,
+) (
+	*openAiType.ListResponse[openAiType.OpenAiRunStepObject],
+	error,
+) {
+
+	queryString := ""
+	if listRequest != nil {
+		reflectValue := reflect.ValueOf(listRequest)
+		reflectType := reflectValue.Type()
+		queryStringValues := url.Values{}
+
+		if reflectValue.Kind() != reflect.Struct {
+			return nil, fmt.Errorf("listRequest is not struct")
+		}
+
+		for i := 0; i < reflectValue.NumField(); i++ {
+			fieldKey := reflectType.Field(i).Name
+			fieldValue := reflectValue.Field(i).Interface()
+			queryStringValues.Add(fieldKey, fmt.Sprintf("%v", fieldValue))
+		}
+		queryString = fmt.Sprintf("?%s", queryStringValues.Encode())
+	}
+
+	request, err := http.NewRequest(
+		http.MethodGet,
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/runs/%s/steps%s",
+			threadID,
+			runID,
+			queryString,
+		),
+		nil,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", threadRunImpl.ApiKey))
+	request.Header.Add("OpenAI-Beta", "assistants=v1")
+
+	createThreadRunClient := &http.Client{}
+
+	response, err := createThreadRunClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := &openAiType.ListResponse[openAiType.OpenAiRunStepObject]{}
+	json.Unmarshal(body, result)
+
+	return result, nil
+}

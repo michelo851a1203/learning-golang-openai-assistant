@@ -10,4 +10,6 @@ type ThreadRun interface {
 	SubmitToolOutputToRun(threadID, runID string, toolOutputRequest *openAiType.SubmitOutputsAndRunRequest) (*openAiType.OpenAiRunObject, error)
 	CancelRun(threadID, runID string) (*openAiType.OpenAiRunObject, error)
 	CreateThreadAndRun(threadAndRunRequest *openAiType.ThreadAndRunRequest) (*openAiType.OpenAiRunObject, error)
+	GetRunStep(threadID, runID, stepID string) (*openAiType.OpenAiRunStepObject, error)
+	GetRunStepList(threadID, runID string, listRequest *openAiType.QueryListRequest) (*openAiType.ListResponse[openAiType.OpenAiRunStepObject], error)
 }

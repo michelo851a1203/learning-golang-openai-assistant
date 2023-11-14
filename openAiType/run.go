@@ -4,6 +4,8 @@ import (
 	"testf/openAiType/openAiLastError"
 	"testf/openAiType/openAiModel"
 	"testf/openAiType/openAiRunStatus"
+	"testf/openAiType/openAiStep"
+	"testf/openAiType/openAiTool"
 )
 
 type ToolOutputObject struct {
@@ -38,4 +40,67 @@ type OpenAiRunObject struct {
 	Tools        []*OpenAiTool             `json:"tools"`
 	FileIDs      []*OpenAiFileObject       `json:"file_ids"`
 	Metadata     *OpenAiMetaData           `json:"metadata"`
+}
+
+type OpenAiRunStepObject struct {
+	ID          string                    `json:"id"`
+	Object      string                    `json:"object"`
+	CreatedAt   int64                     `json:"created_at"`
+	RunID       string                    `json:"run_id"`
+	AssistantID string                    `json:"assistant_id"`
+	ThreadID    string                    `json:"thread_id"`
+	Type        openAiStep.StepTypeStatus `json:"type"`
+	Status      openAiRunStatus.RunStatus `json:"status"`
+	CancelledAt *int64                    `json:"cancelled_at,omitempty"`
+	CompletedAt *int64                    `json:"completed_at,omitempty"`
+	ExpiredAt   *int64                    `json:"expired_at,omitempty"`
+	FailedAt    *int64                    `json:"failed_at,omitempty"`
+	LastError   *LastErrorObject          `json:"last_error"`
+	StepDetails *StepDetails              `json:"step_details"`
+	Metadata    *OpenAiMetaData           `json:"metadata"`
+}
+
+type StepDetails struct {
+	Type            openAiStep.StepTypeStatus `json:"type"`
+	MessageCreation *MessageCreation          `json:"message_creation,omitempty"`
+	ToolCalls       *ToolCalls                `json:"tool_calls,omitempty"`
+}
+
+func (detail *StepDetails) CheckValid() bool {
+	switch detail.Type {
+	case openAiStep.MessageCreation:
+		return detail.MessageCreation != nil && detail.ToolCalls == nil
+	case openAiStep.ToolCalls:
+		return detail.MessageCreation == nil && detail.ToolCalls != nil
+	}
+	return false
+}
+
+type MessageCreation struct {
+	MessageID string `json:"message_id"`
+}
+
+type ToolCalls struct {
+	ID              string                  `json:"id"`
+	Type            openAiTool.Tool         `json:"type"`
+	CodeInterpreter *CodeInterpreterObject  `json:"code_interpreter,omitempty"`
+	Retrieval       *map[string]interface{} `json:"retrieval,omitempty"`
+	Function        *FunctionCallingObject  `json:"function,omitempty"`
+}
+
+func (toolCalls *ToolCalls) CheckValid() bool {
+	switch toolCalls.Type {
+	case openAiTool.CodeInterpreter:
+		return toolCalls.CodeInterpreter != nil && toolCalls.Retrieval == nil && toolCalls.Function == nil
+	case openAiTool.Retrieval:
+		return toolCalls.CodeInterpreter == nil && toolCalls.Retrieval != nil && toolCalls.Function == nil
+	case openAiTool.FunctionCalling:
+		return toolCalls.CodeInterpreter == nil && toolCalls.Retrieval == nil && toolCalls.Function != nil
+	}
+	return false
+}
+
+type CodeInterpreterObject struct {
+	Input   string              `json:"input"`
+	Outputs []*ToolOutputObject `json:"outputs"`
 }

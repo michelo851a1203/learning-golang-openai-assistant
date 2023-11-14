@@ -8,6 +8,9 @@ import (
 )
 
 type FunctionCallingObject struct {
+	Name      string                 `json:"name"`
+	Arguments map[string]interface{} `json:"arguments"`
+	Output    *string                `json:"output"`
 }
 
 type OpenAiTool struct {
@@ -40,7 +43,7 @@ type DeleteResponse struct {
 }
 
 type ListResult interface {
-	AssistantObject | AssistantFileObject | OpenAiMessagesObject | OpenAiMessagesFileObject | OpenAiRunObject
+	AssistantObject | AssistantFileObject | OpenAiMessagesObject | OpenAiMessagesFileObject | OpenAiRunObject | OpenAiRunStepObject
 }
 
 type ListResponse[T ListResult] struct {
