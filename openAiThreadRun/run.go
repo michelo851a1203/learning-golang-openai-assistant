@@ -15,7 +15,7 @@ type ThreadRunImpl struct {
 	ApiKey string
 }
 
-func (ThreadRunImpl *ThreadRunImpl) CreateRun(
+func (threadRunImpl *ThreadRunImpl) CreateRun(
 	threadID string,
 	createRequest *openAiType.CreateThreadRunRequest,
 ) (
@@ -41,7 +41,7 @@ func (ThreadRunImpl *ThreadRunImpl) CreateRun(
 	}
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", ThreadRunImpl.ApiKey))
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", threadRunImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
 	createThreadRunClient := &http.Client{}
@@ -64,8 +64,8 @@ func (ThreadRunImpl *ThreadRunImpl) CreateRun(
 	return result, nil
 }
 
-func (ThreadRunImpl *ThreadRunImpl) ModifyRun(
-	threadID string,
+func (threadRunImpl *ThreadRunImpl) ModifyRun(
+	threadID,
 	runID string,
 	updateRequest *openAiType.UpdateThreadRunRequest,
 ) (
@@ -93,7 +93,7 @@ func (ThreadRunImpl *ThreadRunImpl) ModifyRun(
 	}
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", ThreadRunImpl.ApiKey))
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", threadRunImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
 	updateThreadRunClient := &http.Client{}
@@ -116,7 +116,7 @@ func (ThreadRunImpl *ThreadRunImpl) ModifyRun(
 	return result, nil
 }
 
-func (ThreadRunImpl *ThreadRunImpl) GetRunList(
+func (threadRunImpl *ThreadRunImpl) GetRunList(
 	threadID string,
 	listRequest *openAiType.QueryListRequest,
 ) (
@@ -156,7 +156,7 @@ func (ThreadRunImpl *ThreadRunImpl) GetRunList(
 	}
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", ThreadRunImpl.ApiKey))
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", threadRunImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
 	ThreadRunClient := &http.Client{}
@@ -179,7 +179,7 @@ func (ThreadRunImpl *ThreadRunImpl) GetRunList(
 	return result, nil
 }
 
-func (ThreadRunImpl *ThreadRunImpl) GetRun(threadID, runID string) (
+func (threadRunImpl *ThreadRunImpl) GetRun(threadID, runID string) (
 	*openAiType.OpenAiRunObject,
 	error,
 ) {
@@ -199,7 +199,7 @@ func (ThreadRunImpl *ThreadRunImpl) GetRun(threadID, runID string) (
 	}
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", ThreadRunImpl.ApiKey))
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", threadRunImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
 	detailThreadRunClient := &http.Client{}
@@ -222,8 +222,60 @@ func (ThreadRunImpl *ThreadRunImpl) GetRun(threadID, runID string) (
 	return result, nil
 }
 
-func (ThreadRunImpl *ThreadRunImpl) CancelRun(
-	threadID string,
+func (threadRunImpl *ThreadRunImpl) SubmitToolOutputToRun(
+	threadID,
+	runID string,
+	toolOutputRequest *openAiType.SubmitOutputsAndRunRequest,
+) (
+	*openAiType.OpenAiRunObject,
+	error,
+) {
+
+	requestInfo, err := json.Marshal(toolOutputRequest)
+	if err != nil {
+		return nil, err
+	}
+
+	request, err := http.NewRequest(
+		http.MethodPost,
+		fmt.Sprintf(
+			"https://api.openai.com/v1/threads/%s/runs/%s/submit_tool_outputs",
+			threadID,
+			runID,
+		),
+		bytes.NewBuffer(requestInfo),
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", threadRunImpl.ApiKey))
+	request.Header.Add("OpenAI-Beta", "assistants=v1")
+
+	createThreadRunClient := &http.Client{}
+
+	response, err := createThreadRunClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := &openAiType.OpenAiRunObject{}
+	json.Unmarshal(body, result)
+
+	return result, nil
+}
+
+func (threadRunImpl *ThreadRunImpl) CancelRun(
+	threadID,
 	runID string,
 ) (
 	*openAiType.OpenAiRunObject,
@@ -245,7 +297,7 @@ func (ThreadRunImpl *ThreadRunImpl) CancelRun(
 	}
 
 	request.Header.Add("Content-Type", "application/json")
-	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", ThreadRunImpl.ApiKey))
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", threadRunImpl.ApiKey))
 	request.Header.Add("OpenAI-Beta", "assistants=v1")
 
 	createThreadRunClient := &http.Client{}
@@ -266,4 +318,49 @@ func (ThreadRunImpl *ThreadRunImpl) CancelRun(
 	json.Unmarshal(body, result)
 
 	return result, nil
+}
+
+func (threadRunImpl *ThreadRunImpl) CreateThreadAndRun(
+	threadAndRunRequest *openAiType.ThreadAndRunRequest,
+) (
+	*openAiType.OpenAiRunObject,
+	error,
+) {
+	requestInfo, err := json.Marshal(threadAndRunRequest)
+	if err != nil {
+		return nil, err
+	}
+	request, err := http.NewRequest(
+		http.MethodPost,
+		"https://api.openai.com/v1/threads/runs",
+		bytes.NewBuffer(requestInfo),
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	request.Header.Add("Content-Type", "application/json")
+	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", threadRunImpl.ApiKey))
+	request.Header.Add("OpenAI-Beta", "assistants=v1")
+
+	createThreadRunClient := &http.Client{}
+
+	response, err := createThreadRunClient.Do(request)
+	if err != nil {
+		return nil, err
+	}
+	defer response.Body.Close()
+
+	body, err := io.ReadAll(response.Body)
+
+	if err != nil {
+		return nil, err
+	}
+
+	result := &openAiType.OpenAiRunObject{}
+	json.Unmarshal(body, result)
+
+	return result, nil
+
 }

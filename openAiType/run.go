@@ -6,6 +6,15 @@ import (
 	"testf/openAiType/openAiRunStatus"
 )
 
+type ToolOutputObject struct {
+	ToolCallID string `json:"tool_call_id,omitempty"`
+	OutputName string `json:"output_name,omitempty"`
+}
+
+type SubmitOutputsAndRunRequest struct {
+	ToolOutputs []*ToolOutputObject `json:"tool_outputs"`
+}
+
 type LastErrorObject struct {
 	Code    openAiLastError.LastErrorCode `json:"code"`
 	Message string                        `json:"message"`
