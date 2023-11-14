@@ -57,7 +57,7 @@ type OpenAiMessagesObject struct {
 	Role        openAiRole.Role  `json:"role"`
 	Content     []*OpenAiContent `json:"content"`
 	FileIDs     []string         `json:"file_ids"`
-	AssistantID string           `json:"assistant_id"`
-	RunID       string           `json:"run_id"`
+	AssistantID *string          `json:"assistant_id"`
+	RunID       *string          `json:"run_id"`
 	Metadata    *OpenAiMetaData  `json:"metadata"`
 }

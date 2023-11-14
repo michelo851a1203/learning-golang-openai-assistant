@@ -7,10 +7,16 @@ import (
 	"testf/openAiType/openAiTool"
 )
 
+type FunctionCallingParameters struct {
+	Type       string                 `json:"type"`
+	Properties map[string]interface{} `json:"properties"`
+	Required   []string               `json:"required,omitempty"`
+}
+
 type FunctionCallingObject struct {
-	Name      string                 `json:"name"`
-	Arguments map[string]interface{} `json:"arguments"`
-	Output    *string                `json:"output"`
+	Description string                       `json:"description"`
+	Name        string                       `json:"name"`
+	Parameters  []*FunctionCallingParameters `json:"parameters"`
 }
 
 type OpenAiTool struct {

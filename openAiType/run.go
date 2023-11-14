@@ -3,6 +3,7 @@ package openAiType
 import (
 	"testf/openAiType/openAiLastError"
 	"testf/openAiType/openAiModel"
+	"testf/openAiType/openAiRequiredAction"
 	"testf/openAiType/openAiRunStatus"
 	"testf/openAiType/openAiStep"
 	"testf/openAiType/openAiTool"
@@ -22,24 +23,45 @@ type LastErrorObject struct {
 	Message string                        `json:"message"`
 }
 
+type RequiredActionObject struct {
+	Type              openAiRequiredAction.ActionType `json:"type"`
+	SubmitToolOutputs *SubmitToolOutputsObject        `json:"submit_tool_outputs,omitempty"`
+}
+
+type SubmitToolOutputsObject struct {
+	ToolCalls []*ToolCallsObject `json:"tool_calls"`
+}
+
+type ToolCallsObject struct {
+	ID       string          `json:"id"`
+	Type     openAiTool.Tool `json:"type"`
+	Function *FunctionObject `json:"function,omitempty"`
+}
+
+type FunctionObject struct {
+	Name      string `json:"name"`
+	Arguments string `json:"arguments"`
+}
+
 type OpenAiRunObject struct {
-	ID           string                    `json:"id"`
-	Object       string                    `json:"object"`
-	CreatedAt    int64                     `json:"created_at"`
-	AssistantID  string                    `json:"assistant_id"`
-	ThreadID     string                    `json:"thread_id"`
-	Status       openAiRunStatus.RunStatus `json:"status"`
-	StartedAt    int64                     `json:"started_at"`
-	ExpiresAt    *int64                    `json:"expires_at,omitempty"`
-	CancelledAt  *int64                    `json:"cancelled_at,omitempty"`
-	FailedAt     *int64                    `json:"failed_at,omitempty"`
-	CompletedAt  *int64                    `json:"completed_at,omitempty"`
-	LastError    *LastErrorObject          `json:"last_error"`
-	Model        openAiModel.OpenAiModel   `json:"model"`
-	Instructions string                    `json:"instructions"`
-	Tools        []*OpenAiTool             `json:"tools"`
-	FileIDs      []*OpenAiFileObject       `json:"file_ids"`
-	Metadata     *OpenAiMetaData           `json:"metadata"`
+	ID             string                    `json:"id"`
+	Object         string                    `json:"object"`
+	CreatedAt      int64                     `json:"created_at"`
+	AssistantID    string                    `json:"assistant_id"`
+	ThreadID       string                    `json:"thread_id"`
+	Status         openAiRunStatus.RunStatus `json:"status"`
+	StartedAt      int64                     `json:"started_at"`
+	ExpiresAt      *int64                    `json:"expires_at,omitempty"`
+	CancelledAt    *int64                    `json:"cancelled_at,omitempty"`
+	FailedAt       *int64                    `json:"failed_at,omitempty"`
+	CompletedAt    *int64                    `json:"completed_at,omitempty"`
+	RequiredAction *RequiredActionObject     `json:"required_action,omitempty"`
+	LastError      *LastErrorObject          `json:"last_error"`
+	Model          openAiModel.OpenAiModel   `json:"model"`
+	Instructions   string                    `json:"instructions"`
+	Tools          []*OpenAiTool             `json:"tools"`
+	FileIDs        []*OpenAiFileObject       `json:"file_ids"`
+	Metadata       *OpenAiMetaData           `json:"metadata"`
 }
 
 type OpenAiRunStepObject struct {
@@ -81,11 +103,11 @@ type MessageCreation struct {
 }
 
 type ToolCalls struct {
-	ID              string                  `json:"id"`
-	Type            openAiTool.Tool         `json:"type"`
-	CodeInterpreter *CodeInterpreterObject  `json:"code_interpreter,omitempty"`
-	Retrieval       *map[string]interface{} `json:"retrieval,omitempty"`
-	Function        *FunctionCallingObject  `json:"function,omitempty"`
+	ID              string                     `json:"id"`
+	Type            openAiTool.Tool            `json:"type"`
+	CodeInterpreter *CodeInterpreterObject     `json:"code_interpreter,omitempty"`
+	Retrieval       *map[string]interface{}    `json:"retrieval,omitempty"`
+	Function        *FunctionCallingStepObject `json:"function,omitempty"`
 }
 
 func (toolCalls *ToolCalls) CheckValid() bool {
@@ -103,4 +125,10 @@ func (toolCalls *ToolCalls) CheckValid() bool {
 type CodeInterpreterObject struct {
 	Input   string              `json:"input"`
 	Outputs []*ToolOutputObject `json:"outputs"`
+}
+
+type FunctionCallingStepObject struct {
+	Name      string                 `json:"name"`
+	Arguments map[string]interface{} `json:"arguments"`
+	Output    *string                `json:"output"`
 }

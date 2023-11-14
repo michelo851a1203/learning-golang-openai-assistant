@@ -26,7 +26,7 @@ type ThreadAndRunRequest struct {
 	AssistantID  string                  `json:"assistant_id"`
 	Thread       string                  `json:"thread_id"`
 	Model        openAiModel.OpenAiModel `json:"model"`
-	Instructions string                  `json:"instructions,omitempty"`
+	Instructions *string                 `json:"instructions,omitempty"`
 	Tools        []*OpenAiTool           `json:"tools,omitempty"`
 	Metadata     *OpenAiMetaData         `json:"metadata,omitempty"`
 }
