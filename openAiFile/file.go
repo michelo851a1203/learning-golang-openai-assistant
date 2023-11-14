@@ -69,7 +69,6 @@ func (openAiFileImpl *OpenAiFileImpl) UploadFile(
 ) {
 	var requestBody bytes.Buffer
 	multipartWriter := multipart.NewWriter(&requestBody)
-	defer multipartWriter.Close()
 
 	// file
 	fileWriter, err := multipartWriter.CreateFormFile("file", preparedFile.Name())
@@ -83,6 +82,12 @@ func (openAiFileImpl *OpenAiFileImpl) UploadFile(
 	}
 	// purpose
 	err = multipartWriter.WriteField("purpose", string(purpose))
+
+	if err != nil {
+		return nil, err
+	}
+
+	err = multipartWriter.Close()
 
 	if err != nil {
 		return nil, err
