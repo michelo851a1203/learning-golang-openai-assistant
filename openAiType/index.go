@@ -1,6 +1,8 @@
 package openAiType
 
 import (
+	"fmt"
+	"net/url"
 	"testf/openAiType/listOrder"
 	"testf/openAiType/openAiListObject"
 	"testf/openAiType/openAiTool"
@@ -69,4 +71,29 @@ type QueryListRequest struct {
 	Order  listOrder.ListOrder `json:"order,omitempty"`
 	After  string              `json:"after,omitempty"`
 	Before string              `json:"before,omitempty"`
+}
+
+func (queryListRequest *QueryListRequest) ToQueryString() string {
+	queryValue := url.Values{}
+
+	if queryListRequest.Limit > 0 {
+		queryValue.Set("limit", fmt.Sprintf("%d", queryListRequest.Limit))
+	}
+
+	if queryListRequest.Order != "" {
+		queryValue.Set("order", string(queryListRequest.Order))
+	}
+
+	if queryListRequest.After != "" {
+		queryValue.Set("after", queryListRequest.After)
+	}
+
+	if queryListRequest.Before != "" {
+		queryValue.Set("before", queryListRequest.Before)
+	}
+	queryRawString := queryValue.Encode()
+	if queryRawString == "" {
+		return ""
+	}
+	return fmt.Sprintf("?%s", queryRawString)
 }

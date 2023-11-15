@@ -8,6 +8,6 @@ type CreateAssistantRequest struct {
 	Description  *string                 `json:"description,omitempty"`
 	Instructions *string                 `json:"instructions,omitempty"`
 	Tools        []*OpenAiTool           `json:"tools,omitempty"`
-	FileIds      []*OpenAiFileObject     `json:"file_ids,omitempty"`
+	FileIds      []string                `json:"file_ids,omitempty"`
 	Metadata     *OpenAiMetaData         `json:"metadata,omitempty"`
 }

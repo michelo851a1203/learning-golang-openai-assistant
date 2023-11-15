@@ -17,7 +17,17 @@ type AssistantObject struct {
 
 func (assistantObject AssistantObject) String() string {
 	return fmt.Sprintf(
-		"ID: %s, Object: %s, CreatedAt: %d, Name: %v, Description: %v, Model: %s, Instructions: %v, Tools: %v, FileIDs: %v, Metadata: %v",
+		`ID: %s, 
+		 Object: %s,
+	   CreatedAt: %d,
+		 Name: %v,
+		 Description: %v,
+		 Model: %s,
+		 Instructions: %v,
+		 Tools: %v,
+		 FileIDs: %v,
+		 Metadata: %v"
+	 `,
 		assistantObject.ID,
 		assistantObject.Object,
 		assistantObject.CreatedAt,

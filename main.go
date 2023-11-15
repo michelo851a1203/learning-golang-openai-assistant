@@ -31,7 +31,6 @@ var threadPool *sync.Pool
 func main() {
 	apiKey := os.Getenv("API_KEY")
 	assistantImpl := openAiAssistant.AssistantImpl{ApiKey: apiKey}
-	// assistantFileImpl := openAiAssistant.AssistantFileImpl{ApiKey: apiKey}
 	openAiFileImpl := openAiFile.OpenAiFileImpl{ApiKey: apiKey}
 	threadsImpl := openaiThreads.ThreadsImpl{ApiKey: apiKey}
 	messagesImpl := openAiMessages.MessagesImpl{ApiKey: apiKey}
@@ -90,12 +89,12 @@ func main() {
 	}
 
 	go func(api *openAiAssistant.AssistantImpl) {
-		poolFileMap := filePool.Get().(map[string]*openAiType.OpenAiFileObject)
+		poolFileMap := filePool.Get().(*map[string]*openAiType.OpenAiFileObject)
 		defer filePool.Put(poolFileMap)
-		openAiFileList := []*openAiType.OpenAiFileObject{}
+		fileIDList := []string{}
 
-		for _, openAiFile := range poolFileMap {
-			openAiFileList = append(openAiFileList, openAiFile)
+		for fileID := range *poolFileMap {
+			fileIDList = append(fileIDList, fileID)
 		}
 
 		request := openAiType.CreateAssistantRequest{
@@ -107,7 +106,7 @@ func main() {
 					Type: openAiTool.Retrieval,
 				},
 			},
-			FileIds: openAiFileList,
+			FileIds: fileIDList,
 		}
 		assistant, err := api.CreateAssistant(&request)
 		if err != nil {
@@ -120,7 +119,7 @@ func main() {
 		fmt.Println("================")
 		assistantPool = &sync.Pool{
 			New: func() interface{} {
-				return &assistant
+				return assistant
 			},
 		}
 	}(&assistantImpl)
@@ -138,7 +137,7 @@ func main() {
 		fmt.Println("================")
 		threadPool = &sync.Pool{
 			New: func() interface{} {
-				return &thread
+				return thread
 			},
 		}
 
@@ -153,7 +152,7 @@ func main() {
 
 		deleteFileWaitGroup := sync.WaitGroup{}
 		deleteFileMap := *filePool.Get().(*map[string]*openAiType.OpenAiFileObject)
-		deleteFileWaitGroup.Add(len(deleteFileMap))
+		deleteFileWaitGroup.Add(len(deleteFileMap) + 2)
 
 		for openAiFileID := range deleteFileMap {
 			go func(fileID string) {
@@ -175,38 +174,49 @@ func main() {
 				fmt.Println("================")
 			}(openAiFileID)
 		}
-		deleteFileWaitGroup.Wait()
 
-		currentThread, ok := threadPool.Get().(*openAiType.OpenAiThreadObject)
-		if currentThread != nil && ok {
-			threadDeletedResult, err := threadsImpl.DeleteThread(currentThread.ID)
-			if err != nil {
-				fmt.Printf("刪除線程發生錯誤 : [%s]\n", err.Error())
-				fmt.Println("================")
+		go func() {
+			defer deleteFileWaitGroup.Done()
+			currentAssistant, ok := assistantPool.Get().(*openAiType.AssistantObject)
+			fmt.Println(currentAssistant)
+			fmt.Println(ok)
+
+			if currentAssistant != nil && ok {
+				deleteAssistantResult, err := assistantImpl.DeleteAssistant(currentAssistant.ID)
+				if err != nil {
+					fmt.Printf("刪除助理發生錯誤 : [%s]\n", err.Error())
+					fmt.Println("================")
+				}
+				if deleteAssistantResult.Deleted {
+					fmt.Println("刪除助理成功")
+					fmt.Println("================")
+				} else {
+					fmt.Println("刪除助理失敗")
+					fmt.Println("================")
+				}
 			}
-			if threadDeletedResult.Deleted {
-				fmt.Println("刪除線程成功")
-				fmt.Println("================")
-			} else {
-				fmt.Println("刪除線程失敗")
-				fmt.Println("================")
+		}()
+
+		go func() {
+			defer deleteFileWaitGroup.Done()
+			currentThread, ok := threadPool.Get().(*openAiType.OpenAiThreadObject)
+			if currentThread != nil && ok {
+				threadDeletedResult, err := threadsImpl.DeleteThread(currentThread.ID)
+				if err != nil {
+					fmt.Printf("刪除線程發生錯誤 : [%s]\n", err.Error())
+					fmt.Println("================")
+				}
+				if threadDeletedResult.Deleted {
+					fmt.Println("刪除線程成功")
+					fmt.Println("================")
+				} else {
+					fmt.Println("刪除線程失敗")
+					fmt.Println("================")
+				}
 			}
-		}
-		currentAssistant, ok := assistantPool.Get().(*openAiType.AssistantObject)
-		if currentAssistant != nil && ok {
-			deleteAssistantResult, err := assistantImpl.DeleteAssistant(currentAssistant.ID)
-			if err != nil {
-				fmt.Printf("刪除助理發生錯誤 : [%s]\n", err.Error())
-				fmt.Println("================")
-			}
-			if deleteAssistantResult.Deleted {
-				fmt.Println("刪除助理成功")
-				fmt.Println("================")
-			} else {
-				fmt.Println("刪除助理失敗")
-				fmt.Println("================")
-			}
-		}
+		}()
+
+		deleteFileWaitGroup.Wait()
 
 		os.Exit(0)
 	}()
@@ -218,7 +228,6 @@ func main() {
 		if err != nil {
 			panic(err)
 		}
-		fmt.Println("==================")
 
 		currentAssistant := assistantPool.Get().(*openAiType.AssistantObject)
 		currentThread := threadPool.Get().(*openAiType.OpenAiThreadObject)
@@ -236,8 +245,6 @@ func main() {
 			fmt.Println("================")
 			continue
 		}
-		// currentMessageList, err := messagesImpl.GetMessagesList(threadID, nil)
-		// currentRunList, err := threadRunImpl.GetRunList(threadID, nil)
 
 		runRequest := openAiType.CreateThreadRunRequest{
 			AssistantID: assistantID,
@@ -305,6 +312,5 @@ func main() {
 		threadPool.Put(currentAssistant)
 
 		fmt.Println("==================")
-		fmt.Printf("result : %s", useInputText)
 	}
 }

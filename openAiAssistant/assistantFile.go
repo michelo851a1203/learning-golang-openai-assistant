@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"net/url"
-	"reflect"
 	"testf/openAiType"
 )
 
@@ -158,30 +156,13 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList(
 	*openAiType.ListResponse[openAiType.AssistantFileObject],
 	error,
 ) {
-	queryString := ""
-	if listRequest != nil {
-		reflectValue := reflect.ValueOf(listRequest)
-		reflectType := reflectValue.Type()
-		queryStringValues := url.Values{}
-
-		if reflectValue.Kind() != reflect.Struct {
-			return nil, fmt.Errorf("listRequest is not struct")
-		}
-
-		for i := 0; i < reflectValue.NumField(); i++ {
-			fieldKey := reflectType.Field(i).Name
-			fieldValue := reflectValue.Field(i).Interface()
-			queryStringValues.Add(fieldKey, fmt.Sprintf("%v", fieldValue))
-		}
-		queryString = fmt.Sprintf("?%s", queryStringValues.Encode())
-	}
 
 	request, err := http.NewRequest(
 		http.MethodGet,
 		fmt.Sprintf(
 			"https://api.openai.com/v1/assistants/%s/files%s",
 			assistantID,
-			queryString,
+			listRequest.ToQueryString(),
 		),
 		nil,
 	)
