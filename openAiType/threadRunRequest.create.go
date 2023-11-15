@@ -4,7 +4,7 @@ import "testf/openAiType/openAiModel"
 
 type CreateThreadRunRequest struct {
 	AssistantID  string                  `json:"assistant_id"`
-	Model        openAiModel.OpenAiModel `json:"model"`
+	Model        openAiModel.OpenAiModel `json:"model,omitempty"`
 	Instructions string                  `json:"instructions,omitempty"`
 	Tools        []*OpenAiTool           `json:"tools,omitempty"`
 	Metadata     *OpenAiMetaData         `json:"metadata,omitempty"`

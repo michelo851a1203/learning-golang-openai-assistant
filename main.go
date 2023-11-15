@@ -9,25 +9,33 @@ import (
 	"syscall"
 	"testf/openAiAssistant"
 	"testf/openAiFile"
+	"testf/openAiMessages"
+	"testf/openAiThreadRun"
 	"testf/openAiType"
 	"testf/openAiType/openAiFilePurpose"
 	"testf/openAiType/openAiModel"
+	"testf/openAiType/openAiRole"
+	"testf/openAiType/openAiRunStatus"
 	"testf/openAiType/openAiTool"
+	"testf/openaiThreads"
 	"testf/trainingParameters"
+	"time"
 
 	_ "github.com/joho/godotenv/autoload"
 )
 
 var filePool *sync.Pool
+var assistantPool *sync.Pool
+var threadPool *sync.Pool
 
 func main() {
 	apiKey := os.Getenv("API_KEY")
 	assistantImpl := openAiAssistant.AssistantImpl{ApiKey: apiKey}
 	// assistantFileImpl := openAiAssistant.AssistantFileImpl{ApiKey: apiKey}
 	openAiFileImpl := openAiFile.OpenAiFileImpl{ApiKey: apiKey}
-	// threadsImpl := openaiThreads.ThreadsImpl{ApiKey: apiKey}
-	// messagesImpl := openAiMessages.MessagesImpl{ApiKey: apiKey}
-	// threadRunImpl := openAiThreadRun.ThreadRunImpl{ApiKey: apiKey}
+	threadsImpl := openaiThreads.ThreadsImpl{ApiKey: apiKey}
+	messagesImpl := openAiMessages.MessagesImpl{ApiKey: apiKey}
+	threadRunImpl := openAiThreadRun.ThreadRunImpl{ApiKey: apiKey}
 
 	testFilePath := "./filesForTest"
 	fileInfo, err := os.ReadDir(testFilePath)
@@ -110,7 +118,31 @@ func main() {
 		fmt.Println("創建助理成功：================")
 		fmt.Println(assistant)
 		fmt.Println("================")
+		assistantPool = &sync.Pool{
+			New: func() interface{} {
+				return &assistant
+			},
+		}
 	}(&assistantImpl)
+
+	go func(api *openaiThreads.ThreadsImpl) {
+		request := openAiType.ThreadCreateRequest{}
+		thread, err := api.CreateThread(&request)
+		if err != nil {
+			fmt.Printf("創建線程發生錯誤 : [%s]\n", err.Error())
+			fmt.Println("================")
+			return
+		}
+		fmt.Println("創建線程成功：================")
+		fmt.Println(thread)
+		fmt.Println("================")
+		threadPool = &sync.Pool{
+			New: func() interface{} {
+				return &thread
+			},
+		}
+
+	}(&threadsImpl)
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, syscall.SIGINT, syscall.SIGTERM, os.Interrupt, syscall.SIGQUIT)
@@ -144,21 +176,135 @@ func main() {
 			}(openAiFileID)
 		}
 		deleteFileWaitGroup.Wait()
+
+		currentThread, ok := threadPool.Get().(*openAiType.OpenAiThreadObject)
+		if currentThread != nil && ok {
+			threadDeletedResult, err := threadsImpl.DeleteThread(currentThread.ID)
+			if err != nil {
+				fmt.Printf("刪除線程發生錯誤 : [%s]\n", err.Error())
+				fmt.Println("================")
+			}
+			if threadDeletedResult.Deleted {
+				fmt.Println("刪除線程成功")
+				fmt.Println("================")
+			} else {
+				fmt.Println("刪除線程失敗")
+				fmt.Println("================")
+			}
+		}
+		currentAssistant, ok := assistantPool.Get().(*openAiType.AssistantObject)
+		if currentAssistant != nil && ok {
+			deleteAssistantResult, err := assistantImpl.DeleteAssistant(currentAssistant.ID)
+			if err != nil {
+				fmt.Printf("刪除助理發生錯誤 : [%s]\n", err.Error())
+				fmt.Println("================")
+			}
+			if deleteAssistantResult.Deleted {
+				fmt.Println("刪除助理成功")
+				fmt.Println("================")
+			} else {
+				fmt.Println("刪除助理失敗")
+				fmt.Println("================")
+			}
+		}
+
 		os.Exit(0)
 	}()
 
 	for {
 		fmt.Println("請輸入文字")
 		reader := bufio.NewReader(os.Stdin)
-		text, err := reader.ReadString('\n')
+		useInputText, err := reader.ReadString('\n')
 		if err != nil {
 			panic(err)
 		}
 		fmt.Println("==================")
-		result := filePool.Get().(*map[string]*openAiType.OpenAiFileObject)
-		fmt.Println(result)
-		filePool.Put(result)
+
+		currentAssistant := assistantPool.Get().(*openAiType.AssistantObject)
+		currentThread := threadPool.Get().(*openAiType.OpenAiThreadObject)
+		assistantID := currentAssistant.ID
+		threadID := currentThread.ID
+
+		createMessageRequest := openAiType.CreateMessagesRequest{
+			Role:    openAiRole.User,
+			Content: useInputText,
+		}
+
+		messageResponse, err := messagesImpl.CreateMessages(threadID, &createMessageRequest)
+		if err != nil {
+			fmt.Printf("創建訊息發生錯誤 : [%s]\n", err.Error())
+			fmt.Println("================")
+			continue
+		}
+		// currentMessageList, err := messagesImpl.GetMessagesList(threadID, nil)
+		// currentRunList, err := threadRunImpl.GetRunList(threadID, nil)
+
+		runRequest := openAiType.CreateThreadRunRequest{
+			AssistantID: assistantID,
+		}
+
+		replyObject, err := threadRunImpl.CreateRun(threadID, &runRequest)
+		if err != nil {
+			fmt.Printf("執行訊息發生錯誤 : [%s]\n", err.Error())
+			fmt.Println("================")
+			continue
+		}
+		runID := replyObject.ID
+		for range time.Tick(time.Millisecond * 500) {
+			stepListResponse, err := threadRunImpl.GetRunStepList(threadID, runID, nil)
+			if err != nil {
+				fmt.Printf("取得執行步驟列表發生錯誤 : [%s]\n", err.Error())
+				fmt.Println("================")
+				break
+			}
+			if len(stepListResponse.Data) == 0 {
+				continue
+			}
+			currentRunObject, err := threadRunImpl.GetRun(threadID, runID)
+			if err != nil {
+				fmt.Printf("取得執行狀態發生錯誤 : [%s]\n", err.Error())
+				fmt.Println("================")
+				break
+			}
+			if currentRunObject.Status == openAiRunStatus.InProgress {
+				continue
+			}
+			fmt.Printf("對話任務執行完成... 狀態: [%s]\n", currentRunObject.Status)
+			fmt.Println("================")
+			break
+		}
+
+		queryRequest := openAiType.QueryListRequest{
+			Limit:  10,
+			Before: messageResponse.ID,
+		}
+		messageListResponse, err := messagesImpl.GetMessagesList(threadID, &queryRequest)
+		if err != nil {
+			fmt.Printf("取得對話列表發生錯誤 : [%s]\n", err.Error())
+			fmt.Println("================")
+			continue
+		}
+		messageDataList := messageListResponse.Data
+		if len(messageDataList) == 0 {
+			fmt.Println("沒有取得對話錯誤")
+			fmt.Println("================")
+			return
+		}
+		contentList := messageDataList[0].Content
+		if len(contentList) == 0 {
+			fmt.Println("沒有取得對話錯誤2")
+			fmt.Println("================")
+			return
+		}
+
+		fmt.Println("對話結果================")
+		fmt.Println(contentList[0].Text)
+		fmt.Println("================")
+
+		threadPool.Put(currentThread)
+		threadPool.Put(currentAssistant)
+
 		fmt.Println("==================")
-		fmt.Printf("result : %s", text)
+		fmt.Printf("result : %s", useInputText)
 	}
 }
