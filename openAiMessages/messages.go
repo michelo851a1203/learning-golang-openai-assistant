@@ -117,12 +117,17 @@ func (MessagesImpl *MessagesImpl) GetMessagesList(
 	*openAiType.ListResponse[openAiType.OpenAiMessagesObject],
 	error,
 ) {
+
+	queryString := ""
+	if listRequest != nil {
+		queryString = listRequest.ToQueryString()
+	}
 	request, err := http.NewRequest(
 		http.MethodGet,
 		fmt.Sprintf(
 			"https://api.openai.com/v1/threads/%s/messages%s",
 			threadID,
-			listRequest.ToQueryString(),
+			queryString,
 		),
 		nil,
 	)

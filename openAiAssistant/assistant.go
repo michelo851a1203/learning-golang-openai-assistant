@@ -148,10 +148,14 @@ func (assistantImpl *AssistantImpl) GetAssistantList(
 	*openAiType.ListResponse[openAiType.AssistantObject],
 	error,
 ) {
+	queryString := ""
+	if listRequest != nil {
+		queryString = listRequest.ToQueryString()
+	}
 
 	request, err := http.NewRequest(
 		http.MethodGet,
-		fmt.Sprintf("https://api.openai.com/v1/assistants%s", listRequest.ToQueryString()),
+		fmt.Sprintf("https://api.openai.com/v1/assistants%s", queryString),
 		nil,
 	)
 

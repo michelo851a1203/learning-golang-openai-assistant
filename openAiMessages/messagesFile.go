@@ -20,6 +20,10 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFileList(
 	*openAiType.ListResponse[openAiType.OpenAiMessagesFileObject],
 	error,
 ) {
+	queryString := ""
+	if listRequest != nil {
+		queryString = listRequest.ToQueryString()
+	}
 
 	request, err := http.NewRequest(
 		http.MethodGet,
@@ -27,7 +31,7 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFileList(
 			"https://api.openai.com/v1/threads/%s/messages/%s/files%s",
 			threadID,
 			messageID,
-			listRequest.ToQueryString(),
+			queryString,
 		),
 		nil,
 	)

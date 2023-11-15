@@ -305,7 +305,9 @@ func main() {
 		}
 
 		fmt.Println("對話結果================")
-		fmt.Println(contentList[0].Text)
+		outputText := contentList[0].Text
+
+		fmt.Println(outputText.Value)
 		fmt.Println("================")
 
 		threadPool.Put(currentThread)

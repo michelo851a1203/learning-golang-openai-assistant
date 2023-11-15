@@ -121,12 +121,17 @@ func (threadRunImpl *ThreadRunImpl) GetRunList(
 	*openAiType.ListResponse[openAiType.OpenAiRunObject],
 	error,
 ) {
+	queryString := ""
+	if listRequest != nil {
+		queryString = listRequest.ToQueryString()
+	}
+
 	request, err := http.NewRequest(
 		http.MethodGet,
 		fmt.Sprintf(
 			"https://api.openai.com/v1/threads/%s/runs%s",
 			threadID,
-			listRequest.ToQueryString(),
+			queryString,
 		),
 		nil,
 	)
@@ -399,13 +404,18 @@ func (threadRunImpl *ThreadRunImpl) GetRunStepList(
 	*openAiType.ListResponse[openAiType.OpenAiRunStepObject],
 	error,
 ) {
+	queryString := ""
+	if listRequest != nil {
+		queryString = listRequest.ToQueryString()
+	}
+
 	request, err := http.NewRequest(
 		http.MethodGet,
 		fmt.Sprintf(
 			"https://api.openai.com/v1/threads/%s/runs/%s/steps%s",
 			threadID,
 			runID,
-			listRequest.ToQueryString(),
+			queryString,
 		),
 		nil,
 	)

@@ -156,13 +156,17 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList(
 	*openAiType.ListResponse[openAiType.AssistantFileObject],
 	error,
 ) {
+	queryString := ""
+	if listRequest != nil {
+		queryString = listRequest.ToQueryString()
+	}
 
 	request, err := http.NewRequest(
 		http.MethodGet,
 		fmt.Sprintf(
 			"https://api.openai.com/v1/assistants/%s/files%s",
 			assistantID,
-			listRequest.ToQueryString(),
+			queryString,
 		),
 		nil,
 	)
