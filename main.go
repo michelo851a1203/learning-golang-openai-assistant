@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"strings"
 	"sync"
 	"syscall"
 	"testf/openAiAssistant"
@@ -227,6 +228,9 @@ func main() {
 		useInputText, err := reader.ReadString('\n')
 		if err != nil {
 			panic(err)
+		}
+		if strings.TrimSpace(useInputText) == "" {
+			continue
 		}
 
 		currentAssistant := assistantPool.Get().(*openAiType.AssistantObject)
