@@ -3,7 +3,64 @@ package openAiErrorCode
 type OpenAiErrorCode int
 
 const (
-	TestError OpenAiErrorCode = iota + 1
+	AssistantCreateRequestJSONError OpenAiErrorCode = iota + 1
+	AssistantCreateNewRequestError
+	AssistantCreateSendHTTPRequestError
+	AssistantCreateReadResponseBodyError
+	AssistantCreateResponseJSONError
+	AssistantModifyRequestJSONError
+	AssistantModifyNewRequestError
+	AssistantModifySendHTTPRequestError
+	AssistantModifyReadResponseBodyError
+	AssistantModifyResponseJSONError
+	AssistantDeleteNewRequestError
+	AssistantDeleteSendHTTPRequestError
+	AssistantDeleteReadResponseBodyError
+	AssistantDeleteResponseJSONError
+	AssistantGetListNewRequestError
+	AssistantGetListSendHTTPRequestError
+	AssistantGetListReadResponseBodyError
+	AssistantGetListResponseJSONError
+	AssistantGetNewRequestError
+	AssistantGetSendHTTPRequestError
+	AssistantGetReadResponseBodyError
+	AssistantGetResponseJSONError
+	ThreadCreateRequestJSONError
+	ThreadCreateNewRequestError
+	ThreadCreateSendHTTPRequestError
+	ThreadCreateReadResponseBodyError
+	ThreadCreateResponseJSONError
+	ThreadModifyRequestJSONError
+	ThreadModifyNewRequestError
+	ThreadModifySendHTTPRequestError
+	ThreadModifyReadResponseBodyError
+	ThreadModifyResponseJSONError
+	ThreadDeleteNewRequestError
+	ThreadDeleteSendHTTPRequestError
+	ThreadDeleteReadResponseBodyError
+	ThreadDeleteResponseJSONError
+	ThreadGetNewRequestError
+	ThreadGetSendHTTPRequestError
+	ThreadGetReadResponseBodyError
+	ThreadGetResponseJSONError
+	MessageCreateRequestJSONError
+	MessageCreateNewRequestError
+	MessageCreateSendHTTPRequestError
+	MessageCreateReadResponseBodyError
+	MessageCreateResponseJSONError
+	MessageModifyRequestJSONError
+	MessageModifyNewRequestError
+	MessageModifySendHTTPRequestError
+	MessageModifyReadResponseBodyError
+	MessageModifyResponseJSONError
+	MessageGetListNewRequestError
+	MessageGetListSendHTTPRequestError
+	MessageGetListReadResponseBodyError
+	MessageGetListResponseJSONError
+	MessageGetNewRequestError
+	MessageGetSendHTTPRequestError
+	MessageGetReadResponseBodyError
+	MessageGetResponseJSONError
+
 	CoolError
 )
-

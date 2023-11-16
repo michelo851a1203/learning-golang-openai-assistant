@@ -15,19 +15,9 @@ type AssistantObject struct {
 	Metadata     *OpenAiMetaData     `json:"metadata"`
 }
 
-func (assistantObject AssistantObject) String() string {
+func (assistantObject *AssistantObject) String() string {
 	return fmt.Sprintf(
-		`ID: %s, 
-		 Object: %s,
-	   CreatedAt: %d,
-		 Name: %v,
-		 Description: %v,
-		 Model: %s,
-		 Instructions: %v,
-		 Tools: %v,
-		 FileIDs: %v,
-		 Metadata: %v"
-	 `,
+		"\n  ID: %s, \n  Object: %s, \n  CreatedAt: %d, \n  Name: %v, \n  Description: %v, \n  Model: %s, \n  Instructions: %v, \n  Tools: %v, \n  FileIDs: %v, \n  Metadata: %v",
 		assistantObject.ID,
 		assistantObject.Object,
 		assistantObject.CreatedAt,

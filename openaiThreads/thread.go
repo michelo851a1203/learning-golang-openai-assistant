@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"testf/openAiError"
+	"testf/openAiError/openAiErrorCode"
 	"testf/openAiType"
 )
 
@@ -21,7 +23,14 @@ func (threadsImpl *ThreadsImpl) CreateThread(
 ) {
 	requestInfo, err := json.Marshal(createRequest)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadCreateRequestJSONError,
+			Message:        "Request Marshal JSON Error",
+			Method:         "CreateThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
+
 	}
 
 	request, err := http.NewRequest(
@@ -31,7 +40,13 @@ func (threadsImpl *ThreadsImpl) CreateThread(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadCreateNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "CreateThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -42,18 +57,39 @@ func (threadsImpl *ThreadsImpl) CreateThread(
 
 	response, err := createThreadsClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadCreateSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "CreateThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadCreateReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "CreateThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 
 	result := &openAiType.OpenAiThreadObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadCreateResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "CreateThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
+	}
 
 	return result, nil
 }
@@ -67,7 +103,13 @@ func (threadsImpl *ThreadsImpl) ModifyThread(
 ) {
 	requestInfo, err := json.Marshal(updateRequest)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadModifyRequestJSONError,
+			Message:        "Request Marshal JSON Error",
+			Method:         "ModifyThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 
 	request, err := http.NewRequest(
@@ -77,7 +119,13 @@ func (threadsImpl *ThreadsImpl) ModifyThread(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadModifyNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "ModifyThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -88,18 +136,39 @@ func (threadsImpl *ThreadsImpl) ModifyThread(
 
 	response, err := updateThreadsClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadModifySendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "ModifyThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadModifyReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "ModifyThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 
 	result := &openAiType.OpenAiThreadObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadModifyResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "ModifyThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
+	}
 
 	return result, nil
 }
@@ -115,7 +184,13 @@ func (threadsImpl *ThreadsImpl) DeleteThread(threadID string) (
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadDeleteNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "DeleteThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -126,18 +201,39 @@ func (threadsImpl *ThreadsImpl) DeleteThread(threadID string) (
 
 	response, err := deleteThreadsClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadDeleteSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "DeleteThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadDeleteReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "DeleteThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 
 	result := &openAiType.DeleteResponse{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadDeleteResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "DeleteThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
+	}
 
 	return result, nil
 }
@@ -153,7 +249,13 @@ func (threadsImpl *ThreadsImpl) GetThread(threadID string) (
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadGetNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "GetThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -164,18 +266,39 @@ func (threadsImpl *ThreadsImpl) GetThread(threadID string) (
 
 	response, err := detailThreadsClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadGetSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "GetThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadGetReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
 	}
 
 	result := &openAiType.OpenAiThreadObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadGetResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "GetThread",
+			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
+	}
 
 	return result, nil
 }

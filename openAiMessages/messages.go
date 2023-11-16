@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"testf/openAiError"
+	"testf/openAiError/openAiErrorCode"
 	"testf/openAiType"
 )
 
@@ -22,7 +24,13 @@ func (MessagesImpl *MessagesImpl) CreateMessages(
 ) {
 	requestInfo, err := json.Marshal(createRequest)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageCreateRequestJSONError,
+			Message:        "Request Marshal JSON Error",
+			Method:         "CreateMessages",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 
 	request, err := http.NewRequest(
@@ -32,7 +40,13 @@ func (MessagesImpl *MessagesImpl) CreateMessages(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageCreateNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "CreateMessages",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -43,18 +57,39 @@ func (MessagesImpl *MessagesImpl) CreateMessages(
 
 	response, err := createMessagesClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageCreateSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "CreateMessages",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageCreateReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "CreateMessages",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 
 	result := &openAiType.OpenAiMessagesObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageCreateResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "CreateMessages",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
+	}
 
 	return result, nil
 }
@@ -69,7 +104,13 @@ func (MessagesImpl *MessagesImpl) ModifyMessages(
 ) {
 	requestInfo, err := json.Marshal(updateRequest)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageModifyRequestJSONError,
+			Message:        "Request Marshal JSON Error",
+			Method:         "ModifyMessages",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 
 	request, err := http.NewRequest(
@@ -94,18 +135,39 @@ func (MessagesImpl *MessagesImpl) ModifyMessages(
 
 	response, err := updateMessagesClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageModifySendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "ModifyMessages",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageModifyReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "ModifyMessages",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 
 	result := &openAiType.OpenAiMessagesObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageModifyResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "ModifyMessages",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
+	}
 
 	return result, nil
 }
@@ -117,7 +179,6 @@ func (MessagesImpl *MessagesImpl) GetMessagesList(
 	*openAiType.ListResponse[openAiType.OpenAiMessagesObject],
 	error,
 ) {
-
 	queryString := ""
 	if listRequest != nil {
 		queryString = listRequest.ToQueryString()
@@ -133,7 +194,13 @@ func (MessagesImpl *MessagesImpl) GetMessagesList(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetListNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "GetMessagesList",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -144,18 +211,39 @@ func (MessagesImpl *MessagesImpl) GetMessagesList(
 
 	response, err := MessagesClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetListSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "GetMessagesList",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetListReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetMessagesList",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 
 	result := &openAiType.ListResponse[openAiType.OpenAiMessagesObject]{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetListResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "GetMessagesList",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
+	}
 
 	return result, nil
 }
@@ -174,7 +262,13 @@ func (MessagesImpl *MessagesImpl) GetMessages(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "GetMessage",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -185,18 +279,40 @@ func (MessagesImpl *MessagesImpl) GetMessages(
 
 	response, err := detailMessagesClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "GetMessage",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
+
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetMessage",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
 	}
 
 	result := &openAiType.OpenAiMessagesObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "GetMessage",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
+	}
 
 	return result, nil
 }

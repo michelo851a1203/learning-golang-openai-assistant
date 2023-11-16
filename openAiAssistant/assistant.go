@@ -6,6 +6,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"testf/openAiError"
+	"testf/openAiError/openAiErrorCode"
 	"testf/openAiType"
 )
 
@@ -21,7 +23,13 @@ func (assistantImpl *AssistantImpl) CreateAssistant(
 ) {
 	requestInfo, err := json.Marshal(createRequest)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantCreateRequestJSONError,
+			Message:        "Request Marshal JSON Error",
+			Method:         "CreateAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	request, err := http.NewRequest(
@@ -31,7 +39,13 @@ func (assistantImpl *AssistantImpl) CreateAssistant(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantCreateNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "CreateAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -42,18 +56,39 @@ func (assistantImpl *AssistantImpl) CreateAssistant(
 
 	response, err := createAssistantClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantCreateSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "CreateAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantCreateReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "CreateAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	result := &openAiType.AssistantObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantCreateResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "CreateAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
 
 	return result, nil
 }
@@ -67,7 +102,13 @@ func (assistantImpl *AssistantImpl) ModifyAssistant(
 ) {
 	requestInfo, err := json.Marshal(updateRequest)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantModifyRequestJSONError,
+			Message:        "Request Marshal JSON Error",
+			Method:         "ModifyAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	request, err := http.NewRequest(
@@ -77,7 +118,13 @@ func (assistantImpl *AssistantImpl) ModifyAssistant(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantModifyNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "ModifyAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -88,18 +135,39 @@ func (assistantImpl *AssistantImpl) ModifyAssistant(
 
 	response, err := updateAssistantClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantModifySendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "ModifyAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantModifyReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "ModifyAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	result := &openAiType.AssistantObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantModifyResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "ModifyAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
 
 	return result, nil
 }
@@ -115,7 +183,13 @@ func (assistantImpl *AssistantImpl) DeleteAssistant(assistantID string) (
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantDeleteNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "DeleteAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -126,18 +200,39 @@ func (assistantImpl *AssistantImpl) DeleteAssistant(assistantID string) (
 
 	response, err := deleteAssistantClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantDeleteSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "DeleteAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantDeleteReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "DeleteAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	result := &openAiType.DeleteResponse{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantDeleteResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "DeleteAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
 
 	return result, nil
 }
@@ -160,7 +255,13 @@ func (assistantImpl *AssistantImpl) GetAssistantList(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetListNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "GetAssistantList",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -171,18 +272,39 @@ func (assistantImpl *AssistantImpl) GetAssistantList(
 
 	response, err := assistantClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetListSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "GetAssistantList",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetListReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetAssistantList",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	result := &openAiType.ListResponse[openAiType.AssistantObject]{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetListResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "GetAssistantList",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
 
 	return result, nil
 }
@@ -198,7 +320,13 @@ func (assistantImpl *AssistantImpl) GetAssistant(assistantID string) (
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "GetAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -209,18 +337,39 @@ func (assistantImpl *AssistantImpl) GetAssistant(assistantID string) (
 
 	response, err := detailAssistantClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "GetAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
 	}
 
 	result := &openAiType.AssistantObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "GetAssistant",
+			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
 
 	return result, nil
 }
