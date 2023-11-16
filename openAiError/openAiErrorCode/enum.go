@@ -61,6 +61,29 @@ const (
 	MessageGetSendHTTPRequestError
 	MessageGetReadResponseBodyError
 	MessageGetResponseJSONError
+	RunCreateRequestJSONError
+	RunCreateNewRequestError
+	RunCreateSendHTTPRequestError
+	RunCreateReadResponseBodyError
+	RunCreateResponseJSONError
+	RunModifyRequestJSONError
+	RunModifyNewRequestError
+	RunModifySendHTTPRequestError
+	RunModifyReadResponseBodyError
+	RunModifyResponseJSONError
+	RunGetListNewRequestError
+	RunGetListSendHTTPRequestError
+	RunGetListReadResponseBodyError
+	RunGetListResponseJSONError
+	RunGetNewRequestError
+	RunGetSendHTTPRequestError
+	RunGetReadResponseBodyError
+	RunGetResponseJSONError
+	SubmitToolOutputToRunCreateRequestJSONError
+	SubmitToolOutputToRunGetNewRequestError
+	SubmitToolOutputToRunGetSendHTTPRequestError
+	SubmitToolOutputToRunGetReadResponseBodyError
+	SubmitToolOutputToRunGetResponseJSONError
 
 	CoolError
 )
