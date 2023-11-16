@@ -24,12 +24,12 @@ func (threadRunImpl *ThreadRunImpl) CreateRun(
 ) {
 	requestInfo, err := json.Marshal(createRequest)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunCreateRequestJSONError,
 			Message:        "Request Marshal JSON Error",
 			Method:         "CreateRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -43,12 +43,12 @@ func (threadRunImpl *ThreadRunImpl) CreateRun(
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunCreateNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "CreateRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -60,12 +60,12 @@ func (threadRunImpl *ThreadRunImpl) CreateRun(
 
 	response, err := createThreadRunClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunCreateSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "CreateRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 	defer response.Body.Close()
@@ -73,24 +73,24 @@ func (threadRunImpl *ThreadRunImpl) CreateRun(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunCreateReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "CreateRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
 	result := &openAiType.OpenAiRunObject{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunCreateResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "CreateRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -107,12 +107,12 @@ func (threadRunImpl *ThreadRunImpl) ModifyRun(
 ) {
 	requestInfo, err := json.Marshal(updateRequest)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunModifyRequestJSONError,
 			Message:        "Request Marshal JSON Error",
 			Method:         "ModifyRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -128,12 +128,12 @@ func (threadRunImpl *ThreadRunImpl) ModifyRun(
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunModifyNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "ModifyRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -145,12 +145,12 @@ func (threadRunImpl *ThreadRunImpl) ModifyRun(
 
 	response, err := updateThreadRunClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunModifySendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "ModifyRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 	defer response.Body.Close()
@@ -158,24 +158,24 @@ func (threadRunImpl *ThreadRunImpl) ModifyRun(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunModifyReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "ModifyRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
 	result := &openAiType.OpenAiRunObject{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunModifyResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "ModifyRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -205,12 +205,12 @@ func (threadRunImpl *ThreadRunImpl) GetRunList(
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunGetListNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "GetRunList",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -222,12 +222,12 @@ func (threadRunImpl *ThreadRunImpl) GetRunList(
 
 	response, err := ThreadRunClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunGetListSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "GetRunList",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 	defer response.Body.Close()
@@ -235,24 +235,24 @@ func (threadRunImpl *ThreadRunImpl) GetRunList(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunGetListReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "GetRunList",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
 	result := &openAiType.ListResponse[openAiType.OpenAiRunObject]{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunGetListResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "GetRunList",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -275,12 +275,12 @@ func (threadRunImpl *ThreadRunImpl) GetRun(threadID, runID string) (
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunGetNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "GetRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -292,12 +292,12 @@ func (threadRunImpl *ThreadRunImpl) GetRun(threadID, runID string) (
 
 	response, err := detailThreadRunClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunGetSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "GetRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 	defer response.Body.Close()
@@ -305,24 +305,24 @@ func (threadRunImpl *ThreadRunImpl) GetRun(threadID, runID string) (
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunGetReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "GetRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
 	result := &openAiType.OpenAiRunObject{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.RunGetResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "GetRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -339,12 +339,12 @@ func (threadRunImpl *ThreadRunImpl) SubmitToolOutputToRun(
 ) {
 	requestInfo, err := json.Marshal(toolOutputRequest)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunCreateRequestJSONError,
 			Message:        "Request Marshal JSON Error",
 			Method:         "SubmitToolOutputToRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -359,12 +359,12 @@ func (threadRunImpl *ThreadRunImpl) SubmitToolOutputToRun(
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "SubmitToolOutputToRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -376,12 +376,12 @@ func (threadRunImpl *ThreadRunImpl) SubmitToolOutputToRun(
 
 	response, err := createThreadRunClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "SubmitToolOutputToRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 	defer response.Body.Close()
@@ -389,24 +389,24 @@ func (threadRunImpl *ThreadRunImpl) SubmitToolOutputToRun(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "SubmitToolOutputToRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
 	result := &openAiType.OpenAiRunObject{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
 			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "SubmitToolOutputToRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -432,12 +432,12 @@ func (threadRunImpl *ThreadRunImpl) CancelRun(
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetNewRequestError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CancelRunNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "CancelRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -449,12 +449,12 @@ func (threadRunImpl *ThreadRunImpl) CancelRun(
 
 	response, err := createThreadRunClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetSendHTTPRequestError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CancelRunSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "CancelRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 	defer response.Body.Close()
@@ -462,24 +462,24 @@ func (threadRunImpl *ThreadRunImpl) CancelRun(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetReadResponseBodyError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CancelRunReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "CancelRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
 	result := &openAiType.OpenAiRunObject{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetResponseJSONError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CancelRunResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "CancelRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -494,12 +494,12 @@ func (threadRunImpl *ThreadRunImpl) CreateThreadAndRun(
 ) {
 	requestInfo, err := json.Marshal(threadAndRunRequest)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunCreateRequestJSONError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CreateThreadAndRunCreateRequestJSONError,
 			Message:        "Request Marshal JSON Error",
 			Method:         "CreateThreadAndRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -510,12 +510,12 @@ func (threadRunImpl *ThreadRunImpl) CreateThreadAndRun(
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetNewRequestError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CreateThreadAndRunGetNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "GetRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -527,12 +527,12 @@ func (threadRunImpl *ThreadRunImpl) CreateThreadAndRun(
 
 	response, err := createThreadRunClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetSendHTTPRequestError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CreateThreadAndRunGetSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "GetRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 	defer response.Body.Close()
@@ -540,12 +540,12 @@ func (threadRunImpl *ThreadRunImpl) CreateThreadAndRun(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetReadResponseBodyError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CreateThreadAndRunGetReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "GetRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 
 	}
@@ -553,12 +553,12 @@ func (threadRunImpl *ThreadRunImpl) CreateThreadAndRun(
 	result := &openAiType.OpenAiRunObject{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetResponseJSONError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CreateThreadAndRunGetResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "GetRun",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -584,12 +584,12 @@ func (threadRunImpl *ThreadRunImpl) GetRunStep(
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetNewRequestError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "GetRunStep",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -601,12 +601,12 @@ func (threadRunImpl *ThreadRunImpl) GetRunStep(
 
 	response, err := createThreadRunClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetSendHTTPRequestError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "GetRunStep",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 	defer response.Body.Close()
@@ -614,24 +614,24 @@ func (threadRunImpl *ThreadRunImpl) GetRunStep(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetReadResponseBodyError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "GetRunStep",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
 	result := &openAiType.OpenAiRunObject{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetResponseJSONError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "GetRunStep",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -663,12 +663,12 @@ func (threadRunImpl *ThreadRunImpl) GetRunStepList(
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetNewRequestError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepListNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "GetRunStepList",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -680,12 +680,12 @@ func (threadRunImpl *ThreadRunImpl) GetRunStepList(
 
 	response, err := createThreadRunClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetSendHTTPRequestError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepListSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "GetRunStepList",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 	defer response.Body.Close()
@@ -693,12 +693,12 @@ func (threadRunImpl *ThreadRunImpl) GetRunStepList(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetReadResponseBodyError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepListReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "GetRunStepList",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 
@@ -706,12 +706,12 @@ func (threadRunImpl *ThreadRunImpl) GetRunStepList(
 	err = json.Unmarshal(body, result)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
-			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunGetResponseJSONError,
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepListResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "GetRunStepList",
 			RawError:       err.Error(),
-			Details:        &openAiError.AssistantError{},
+			Details:        &openAiError.RunAssistantError{},
 		}
 	}
 

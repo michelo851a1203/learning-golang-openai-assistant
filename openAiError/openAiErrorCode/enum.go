@@ -84,6 +84,23 @@ const (
 	SubmitToolOutputToRunGetSendHTTPRequestError
 	SubmitToolOutputToRunGetReadResponseBodyError
 	SubmitToolOutputToRunGetResponseJSONError
+	CancelRunNewRequestError
+	CancelRunSendHTTPRequestError
+	CancelRunReadResponseBodyError
+	CancelRunResponseJSONError
+	CreateThreadAndRunCreateRequestJSONError
+	CreateThreadAndRunGetNewRequestError
+	CreateThreadAndRunGetSendHTTPRequestError
+	CreateThreadAndRunGetReadResponseBodyError
+	CreateThreadAndRunGetResponseJSONError
+	GetRunStepNewRequestError
+	GetRunStepSendHTTPRequestError
+	GetRunStepReadResponseBodyError
+	GetRunStepResponseJSONError
+	GetRunStepListNewRequestError
+	GetRunStepListSendHTTPRequestError
+	GetRunStepListReadResponseBodyError
+	GetRunStepListResponseJSONError
 
 	CoolError
 )
