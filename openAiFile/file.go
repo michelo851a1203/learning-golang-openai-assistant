@@ -8,6 +8,8 @@ import (
 	"mime/multipart"
 	"net/http"
 	"os"
+	"testf/openAiError"
+	"testf/openAiError/openAiErrorCode"
 	"testf/openAiType"
 	"testf/openAiType/openAiFilePurpose"
 )
@@ -34,7 +36,13 @@ func (openAiFileImpl *OpenAiFileImpl) GetFileList(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileListNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "GetFileList",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	request.Header.Add("Authorization", fmt.Sprintf("Bearer %s", openAiFileImpl.ApiKey))
@@ -43,18 +51,39 @@ func (openAiFileImpl *OpenAiFileImpl) GetFileList(
 
 	response, err := openAiFileClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileListSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "GetFileList",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileListReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetFileList",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	result := &openAiType.ListFileResponse{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileListResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "GetFileList",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
+	}
 
 	return result, nil
 
@@ -73,24 +102,48 @@ func (openAiFileImpl *OpenAiFileImpl) UploadFile(
 	// file
 	fileWriter, err := multipartWriter.CreateFormFile("file", preparedFile.Name())
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.UploadFileCreateFormFileError,
+			Message:        "CreateFormFile: file Error",
+			Method:         "UploadFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	_, err = io.Copy(fileWriter, preparedFile)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.UploadFileCopyFileError,
+			Message:        "File Copy Error",
+			Method:         "UploadFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 	// purpose
 	err = multipartWriter.WriteField("purpose", string(purpose))
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.UploadFilePurposeFieldError,
+			Message:        "WriteField: purpose Error",
+			Method:         "UploadFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	err = multipartWriter.Close()
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.UploadFileMultipartWriterError,
+			Message:        "multipartWriter Error",
+			Method:         "UploadFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	request, err := http.NewRequest(
@@ -100,7 +153,13 @@ func (openAiFileImpl *OpenAiFileImpl) UploadFile(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.UploadFileNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "UploadFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", multipartWriter.FormDataContentType())
@@ -110,18 +169,39 @@ func (openAiFileImpl *OpenAiFileImpl) UploadFile(
 
 	response, err := openAiFileClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.UploadFileSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "UploadFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.UploadFileReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "UploadFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	result := &openAiType.OpenAiFileObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.UploadFileResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "UploadFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
+	}
 
 	return result, nil
 }
@@ -137,7 +217,13 @@ func (openAiFileImpl *OpenAiFileImpl) DeleteFile(fileID string) (
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.DeleteFileNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "DeleteFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -147,18 +233,39 @@ func (openAiFileImpl *OpenAiFileImpl) DeleteFile(fileID string) (
 
 	response, err := deleteFileClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.DeleteFileSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "DeleteFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.DeleteFileReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "DeleteFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	result := &openAiType.DeleteResponse{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.DeleteFileResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "DeleteFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
+	}
 
 	return result, nil
 }
@@ -174,7 +281,13 @@ func (openAiFileImpl *OpenAiFileImpl) GetFile(fileID string) (
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "GetFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -191,11 +304,26 @@ func (openAiFileImpl *OpenAiFileImpl) GetFile(fileID string) (
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	result := &openAiType.OpenAiFileObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "GetFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
+	}
 
 	return result, nil
 }
@@ -208,7 +336,13 @@ func (openAiFileImpl *OpenAiFileImpl) GetFileContent(fileID string) (string, err
 	)
 
 	if err != nil {
-		return "", err
+		return "", &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileContentNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "GetFileContent",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -218,14 +352,26 @@ func (openAiFileImpl *OpenAiFileImpl) GetFileContent(fileID string) (string, err
 
 	response, err := getFileClient.Do(request)
 	if err != nil {
-		return "", err
+		return "", &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileContentSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "GetFileContent",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return "", err
+		return "", &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileContentReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetFileContent",
+			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
 	}
 
 	return string(body), nil

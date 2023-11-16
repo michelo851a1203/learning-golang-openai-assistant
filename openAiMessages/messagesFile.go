@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"testf/openAiError"
+	"testf/openAiError/openAiErrorCode"
 	"testf/openAiType"
 )
 
@@ -48,18 +50,40 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFileList(
 
 	response, err := MessageFileClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+			OpenStatusCode: openAiErrorCode.GetMessageFileListSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "GetMessageFileList",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesFile{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+			OpenStatusCode: openAiErrorCode.GetMessageFileListReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetMessageFileList",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesFile{},
+		}
 	}
 
 	result := &openAiType.ListResponse[openAiType.OpenAiMessagesFileObject]{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+			OpenStatusCode: openAiErrorCode.GetMessageFileListResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "GetMessageFileList",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesFile{},
+		}
+
+	}
 
 	return result, nil
 }
@@ -84,7 +108,13 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFile(
 	)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+			OpenStatusCode: openAiErrorCode.GetMessageFileNewRequestError,
+			Message:        "NewRequest Error",
+			Method:         "GetMessageFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesFile{},
+		}
 	}
 
 	request.Header.Add("Content-Type", "application/json")
@@ -95,18 +125,40 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFile(
 
 	response, err := detailMessageFileClient.Do(request)
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+			OpenStatusCode: openAiErrorCode.GetMessageFileSendHTTPRequestError,
+			Message:        "Send Http Request Error",
+			Method:         "GetMessageFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesFile{},
+		}
 	}
 	defer response.Body.Close()
 
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, err
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+			OpenStatusCode: openAiErrorCode.GetMessageFileReadResponseBodyError,
+			Message:        "Read Response Body Error",
+			Method:         "GetMessageFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesFile{},
+		}
 	}
 
 	result := &openAiType.OpenAiMessagesFileObject{}
-	json.Unmarshal(body, result)
+	err = json.Unmarshal(body, result)
+
+	if err != nil {
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+			OpenStatusCode: openAiErrorCode.GetMessageFileResponseJSONError,
+			Message:        "Response JSON Error",
+			Method:         "GetMessageFile",
+			RawError:       err.Error(),
+			Details:        &openAiError.MessagesFile{},
+		}
+	}
 
 	return result, nil
 }

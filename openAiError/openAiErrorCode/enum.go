@@ -101,6 +101,34 @@ const (
 	GetRunStepListSendHTTPRequestError
 	GetRunStepListReadResponseBodyError
 	GetRunStepListResponseJSONError
+	GetFileListNewRequestError
+	GetFileListSendHTTPRequestError
+	GetFileListReadResponseBodyError
+	GetFileListResponseJSONError
+	UploadFileCreateFormFileError
+	UploadFileCopyFileError
+	UploadFilePurposeFieldError
+	UploadFileMultipartWriterError
+	UploadFileNewRequestError
+	UploadFileSendHTTPRequestError
+	UploadFileReadResponseBodyError
+	UploadFileResponseJSONError
+	DeleteFileNewRequestError
+	DeleteFileSendHTTPRequestError
+	DeleteFileReadResponseBodyError
+	DeleteFileResponseJSONError
+	GetFileReadResponseBodyError
+	GetFileResponseJSONError
+	GetFileContentNewRequestError
+	GetFileContentSendHTTPRequestError
+	GetFileContentReadResponseBodyError
+	GetMessageFileListSendHTTPRequestError
+	GetMessageFileListReadResponseBodyError
+	GetMessageFileListResponseJSONError
+	GetMessageFileNewRequestError
+	GetMessageFileSendHTTPRequestError
+	GetMessageFileReadResponseBodyError
+	GetMessageFileResponseJSONError
 
 	CoolError
 )
