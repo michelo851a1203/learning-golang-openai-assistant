@@ -15,6 +15,7 @@ type OpenAiError[T OpenAiErrorGenericType] struct {
 	Method         string
 	RawError       string
 	Details        *T
+	NativeApiError *OpenAiNativeApiError
 }
 
 func (e *OpenAiError[T]) Error() string {
@@ -25,5 +26,30 @@ func (e *OpenAiError[T]) Error() string {
 		e.Method,
 		e.RawError,
 		e.Details,
+	)
+}
+
+type OpenAiNativeApiError struct {
+	Message string  `json:"message"`
+	Type    string  `json:"type"`
+	Param   *string `json:"param"`
+	Code    string  `json:"code"`
+}
+
+func (openAiNativeApiError *OpenAiNativeApiError) String() string {
+	return fmt.Sprintf(`
+{
+  "error": {
+    "message": %s,
+    "type": %s,
+    "param": %s,
+    "code":%s 
+  }
+}
+	`,
+		openAiNativeApiError.Message,
+		openAiNativeApiError.Type,
+		*openAiNativeApiError.Param,
+		openAiNativeApiError.Code,
 	)
 }

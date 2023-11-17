@@ -3,16 +3,16 @@ package openAiType
 import "fmt"
 
 type AssistantObject struct {
-	ID           string              `json:"id"`
-	Object       string              `json:"object"`
-	CreatedAt    int64               `json:"created_at"`
-	Name         *string             `json:"name,omitempty"`
-	Description  *string             `json:"description,omitempty"`
-	Model        string              `json:"model"`
-	Instructions *string             `json:"instructions,omitempty"`
-	Tools        []*OpenAiTool       `json:"tools,omitempty"`
-	FileIDs      []*OpenAiFileObject `json:"file_ids,omitempty"`
-	Metadata     *OpenAiMetaData     `json:"metadata"`
+	ID           string          `json:"id"`
+	Object       string          `json:"object"`
+	CreatedAt    int64           `json:"created_at"`
+	Name         *string         `json:"name,omitempty"`
+	Description  *string         `json:"description,omitempty"`
+	Model        string          `json:"model"`
+	Instructions *string         `json:"instructions,omitempty"`
+	Tools        []*OpenAiTool   `json:"tools,omitempty"`
+	FileIDs      []string        `json:"file_ids,omitempty"`
+	Metadata     *OpenAiMetaData `json:"metadata"`
 }
 
 func (assistantObject *AssistantObject) String() string {

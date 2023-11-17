@@ -703,6 +703,7 @@ func (threadRunImpl *ThreadRunImpl) GetRunStepList(
 	}
 
 	result := &openAiType.ListResponse[openAiType.OpenAiRunStepObject]{}
+	fmt.Println(string(body))
 	err = json.Unmarshal(body, result)
 
 	if err != nil {

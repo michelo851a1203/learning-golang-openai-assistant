@@ -60,7 +60,7 @@ type OpenAiRunObject struct {
 	Model          openAiModel.OpenAiModel   `json:"model"`
 	Instructions   string                    `json:"instructions"`
 	Tools          []*OpenAiTool             `json:"tools"`
-	FileIDs        []*OpenAiFileObject       `json:"file_ids"`
+	FileIDs        []string                  `json:"file_ids"`
 	Metadata       *OpenAiMetaData           `json:"metadata"`
 }
 
@@ -79,13 +79,13 @@ type OpenAiRunStepObject struct {
 	FailedAt    *int64                    `json:"failed_at,omitempty"`
 	LastError   *LastErrorObject          `json:"last_error"`
 	StepDetails *StepDetails              `json:"step_details"`
-	Metadata    *OpenAiMetaData           `json:"metadata"`
+	Metadata    *OpenAiMetaData           `json:"metadata,omitempty"`
 }
 
 type StepDetails struct {
 	Type            openAiStep.StepTypeStatus `json:"type"`
 	MessageCreation *MessageCreation          `json:"message_creation,omitempty"`
-	ToolCalls       *ToolCalls                `json:"tool_calls,omitempty"`
+	ToolCalls       *[]ToolCalls              `json:"tool_calls,omitempty"`
 }
 
 func (detail *StepDetails) CheckValid() bool {

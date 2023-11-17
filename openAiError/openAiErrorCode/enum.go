@@ -117,6 +117,9 @@ const (
 	DeleteFileSendHTTPRequestError
 	DeleteFileReadResponseBodyError
 	DeleteFileResponseJSONError
+
+	GetFileNewRequestError
+	GetFileSendHTTPRequestError
 	GetFileReadResponseBodyError
 	GetFileResponseJSONError
 	GetFileContentNewRequestError
