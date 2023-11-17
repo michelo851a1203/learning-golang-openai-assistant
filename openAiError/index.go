@@ -6,7 +6,7 @@ import (
 )
 
 type OpenAiErrorGenericType interface {
-	ThreadsError | AssistantError | MessagesError | RunAssistantError | FileError | MessagesFile
+	ThreadsError | AssistantError | AssistantFileError | MessagesError | RunAssistantError | FileError | MessagesFileError
 }
 
 type OpenAiError[T OpenAiErrorGenericType] struct {

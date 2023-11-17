@@ -1,4 +1,4 @@
 package openAiError
 
-type MessagesFile struct {
+type MessagesFileError struct {
 }

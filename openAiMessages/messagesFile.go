@@ -50,12 +50,12 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFileList(
 
 	response, err := MessageFileClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
 			OpenStatusCode: openAiErrorCode.GetMessageFileListSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "GetMessageFileList",
 			RawError:       err.Error(),
-			Details:        &openAiError.MessagesFile{},
+			Details:        &openAiError.MessagesFileError{},
 		}
 	}
 	defer response.Body.Close()
@@ -63,24 +63,24 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFileList(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
 			OpenStatusCode: openAiErrorCode.GetMessageFileListReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "GetMessageFileList",
 			RawError:       err.Error(),
-			Details:        &openAiError.MessagesFile{},
+			Details:        &openAiError.MessagesFileError{},
 		}
 	}
 
 	result := &openAiType.ListResponse[openAiType.OpenAiMessagesFileObject]{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
 			OpenStatusCode: openAiErrorCode.GetMessageFileListResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "GetMessageFileList",
 			RawError:       err.Error(),
-			Details:        &openAiError.MessagesFile{},
+			Details:        &openAiError.MessagesFileError{},
 		}
 
 	}
@@ -108,12 +108,12 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFile(
 	)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
 			OpenStatusCode: openAiErrorCode.GetMessageFileNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "GetMessageFile",
 			RawError:       err.Error(),
-			Details:        &openAiError.MessagesFile{},
+			Details:        &openAiError.MessagesFileError{},
 		}
 	}
 
@@ -125,12 +125,12 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFile(
 
 	response, err := detailMessageFileClient.Do(request)
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
 			OpenStatusCode: openAiErrorCode.GetMessageFileSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "GetMessageFile",
 			RawError:       err.Error(),
-			Details:        &openAiError.MessagesFile{},
+			Details:        &openAiError.MessagesFileError{},
 		}
 	}
 	defer response.Body.Close()
@@ -138,12 +138,12 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFile(
 	body, err := io.ReadAll(response.Body)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
 			OpenStatusCode: openAiErrorCode.GetMessageFileReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "GetMessageFile",
 			RawError:       err.Error(),
-			Details:        &openAiError.MessagesFile{},
+			Details:        &openAiError.MessagesFileError{},
 		}
 	}
 
@@ -151,12 +151,12 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFile(
 	err = json.Unmarshal(body, result)
 
 	if err != nil {
-		return nil, &openAiError.OpenAiError[openAiError.MessagesFile]{
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
 			OpenStatusCode: openAiErrorCode.GetMessageFileResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "GetMessageFile",
 			RawError:       err.Error(),
-			Details:        &openAiError.MessagesFile{},
+			Details:        &openAiError.MessagesFileError{},
 		}
 	}
 
