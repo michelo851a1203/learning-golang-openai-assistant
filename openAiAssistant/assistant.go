@@ -90,6 +90,28 @@ func (assistantImpl *AssistantImpl) CreateAssistant(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+				OpenStatusCode: openAiErrorCode.AssistantCreateErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "CreateAssistant",
+				RawError:       err.Error(),
+				Details:        &openAiError.AssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantCreateOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "CreateAssistant",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -169,6 +191,28 @@ func (assistantImpl *AssistantImpl) ModifyAssistant(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+				OpenStatusCode: openAiErrorCode.AssistantModifyErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "ModifyAssistant",
+				RawError:       err.Error(),
+				Details:        &openAiError.AssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantModifyOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "ModifyAssistant",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -230,6 +274,28 @@ func (assistantImpl *AssistantImpl) DeleteAssistant(assistantID string) (
 			Message:        "Response JSON Error",
 			Method:         "DeleteAssistant",
 			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+				OpenStatusCode: openAiErrorCode.AssistantDeleteErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "DeleteAssistant",
+				RawError:       err.Error(),
+				Details:        &openAiError.AssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantDeleteOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "DeleteAssistant",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.AssistantError{},
 		}
 	}
@@ -306,6 +372,28 @@ func (assistantImpl *AssistantImpl) GetAssistantList(
 		}
 	}
 
+	if result.FirstID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+				OpenStatusCode: openAiErrorCode.AssistantGetListErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetAssistantList",
+				RawError:       err.Error(),
+				Details:        &openAiError.AssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetListOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetAssistantList",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -367,6 +455,28 @@ func (assistantImpl *AssistantImpl) GetAssistant(assistantID string) (
 			Message:        "Response JSON Error",
 			Method:         "GetAssistant",
 			RawError:       err.Error(),
+			Details:        &openAiError.AssistantError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+				OpenStatusCode: openAiErrorCode.AssistantGetErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetAssistant",
+				RawError:       err.Error(),
+				Details:        &openAiError.AssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.AssistantError]{
+			OpenStatusCode: openAiErrorCode.AssistantGetOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetAssistant",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.AssistantError{},
 		}
 	}

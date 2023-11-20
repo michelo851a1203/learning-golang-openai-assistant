@@ -94,6 +94,28 @@ func (threadRunImpl *ThreadRunImpl) CreateRun(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+				OpenStatusCode: openAiErrorCode.RunCreateErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "CreateRun",
+				RawError:       err.Error(),
+				Details:        &openAiError.RunAssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.RunCreateOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "CreateRun",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.RunAssistantError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -179,6 +201,28 @@ func (threadRunImpl *ThreadRunImpl) ModifyRun(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+				OpenStatusCode: openAiErrorCode.RunModifyErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "ModifyRun",
+				RawError:       err.Error(),
+				Details:        &openAiError.RunAssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.RunModifyOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "ModifyRun",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.RunAssistantError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -256,6 +300,28 @@ func (threadRunImpl *ThreadRunImpl) GetRunList(
 		}
 	}
 
+	if result.FirstID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+				OpenStatusCode: openAiErrorCode.RunGetListErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetRunList",
+				RawError:       err.Error(),
+				Details:        &openAiError.RunAssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.RunGetListOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetRunList",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.RunAssistantError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -322,6 +388,28 @@ func (threadRunImpl *ThreadRunImpl) GetRun(threadID, runID string) (
 			Message:        "Response JSON Error",
 			Method:         "GetRun",
 			RawError:       err.Error(),
+			Details:        &openAiError.RunAssistantError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+				OpenStatusCode: openAiErrorCode.RunGetErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetRun",
+				RawError:       err.Error(),
+				Details:        &openAiError.RunAssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.RunGetOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetRun",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.RunAssistantError{},
 		}
 	}
@@ -410,6 +498,28 @@ func (threadRunImpl *ThreadRunImpl) SubmitToolOutputToRun(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+				OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "SubmitToolOutputToRun",
+				RawError:       err.Error(),
+				Details:        &openAiError.RunAssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.SubmitToolOutputToRunOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "SubmitToolOutputToRun",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.RunAssistantError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -479,6 +589,28 @@ func (threadRunImpl *ThreadRunImpl) CancelRun(
 			Message:        "Response JSON Error",
 			Method:         "CancelRun",
 			RawError:       err.Error(),
+			Details:        &openAiError.RunAssistantError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+				OpenStatusCode: openAiErrorCode.CancelRunErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "CancelRun",
+				RawError:       err.Error(),
+				Details:        &openAiError.RunAssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CancelRunOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "CancelRun",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.RunAssistantError{},
 		}
 	}
@@ -562,6 +694,28 @@ func (threadRunImpl *ThreadRunImpl) CreateThreadAndRun(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+				OpenStatusCode: openAiErrorCode.CreateThreadAndRunErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetRun",
+				RawError:       err.Error(),
+				Details:        &openAiError.RunAssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.CreateThreadAndRunOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetRun",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.RunAssistantError{},
+		}
+	}
+
 	return result, nil
 
 }
@@ -631,6 +785,28 @@ func (threadRunImpl *ThreadRunImpl) GetRunStep(
 			Message:        "Response JSON Error",
 			Method:         "GetRunStep",
 			RawError:       err.Error(),
+			Details:        &openAiError.RunAssistantError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+				OpenStatusCode: openAiErrorCode.GetRunStepReadResponseBodyError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetRunStep",
+				RawError:       err.Error(),
+				Details:        &openAiError.RunAssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepResponseJSONError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetRunStep",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.RunAssistantError{},
 		}
 	}
@@ -711,6 +887,28 @@ func (threadRunImpl *ThreadRunImpl) GetRunStepList(
 			Message:        "Response JSON Error",
 			Method:         "GetRunStepList",
 			RawError:       err.Error(),
+			Details:        &openAiError.RunAssistantError{},
+		}
+	}
+
+	if result.FirstID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+				OpenStatusCode: openAiErrorCode.GetRunStepListErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetRunStepList",
+				RawError:       err.Error(),
+				Details:        &openAiError.RunAssistantError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
+			OpenStatusCode: openAiErrorCode.GetRunStepListOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetRunStepList",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.RunAssistantError{},
 		}
 	}

@@ -91,6 +91,28 @@ func (MessagesImpl *MessagesImpl) CreateMessages(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+				OpenStatusCode: openAiErrorCode.MessageCreateErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "CreateMessages",
+				RawError:       err.Error(),
+				Details:        &openAiError.MessagesError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageCreateOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "CreateMessages",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.MessagesError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -165,6 +187,28 @@ func (MessagesImpl *MessagesImpl) ModifyMessages(
 			Message:        "Response JSON Error",
 			Method:         "ModifyMessages",
 			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+				OpenStatusCode: openAiErrorCode.MessageModifyErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "ModifyMessages",
+				RawError:       err.Error(),
+				Details:        &openAiError.MessagesError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageModifyOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "ModifyMessages",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.MessagesError{},
 		}
 	}
@@ -245,6 +289,28 @@ func (MessagesImpl *MessagesImpl) GetMessagesList(
 		}
 	}
 
+	if result.FirstID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+				OpenStatusCode: openAiErrorCode.MessageGetListErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetMessagesList",
+				RawError:       err.Error(),
+				Details:        &openAiError.MessagesError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetListOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetMessagesList",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.MessagesError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -310,6 +376,28 @@ func (MessagesImpl *MessagesImpl) GetMessages(
 			Message:        "Response JSON Error",
 			Method:         "GetMessage",
 			RawError:       err.Error(),
+			Details:        &openAiError.MessagesError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+				OpenStatusCode: openAiErrorCode.MessageGetErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetMessage",
+				RawError:       err.Error(),
+				Details:        &openAiError.MessagesError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.MessagesError]{
+			OpenStatusCode: openAiErrorCode.MessageGetOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetMessage",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.MessagesError{},
 		}
 	}

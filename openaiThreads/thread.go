@@ -91,6 +91,28 @@ func (threadsImpl *ThreadsImpl) CreateThread(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+				OpenStatusCode: openAiErrorCode.ThreadCreateErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "CreateThread",
+				RawError:       err.Error(),
+				Details:        &openAiError.ThreadsError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadCreateOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "CreateThread",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.ThreadsError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -170,6 +192,28 @@ func (threadsImpl *ThreadsImpl) ModifyThread(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+				OpenStatusCode: openAiErrorCode.ThreadModifyErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "ModifyThread",
+				RawError:       err.Error(),
+				Details:        &openAiError.ThreadsError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadModifyOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "ModifyThread",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.ThreadsError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -235,6 +279,28 @@ func (threadsImpl *ThreadsImpl) DeleteThread(threadID string) (
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+				OpenStatusCode: openAiErrorCode.ThreadDeleteErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "DeleteThread",
+				RawError:       err.Error(),
+				Details:        &openAiError.ThreadsError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadDeleteOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "DeleteThread",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.ThreadsError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -296,6 +362,28 @@ func (threadsImpl *ThreadsImpl) GetThread(threadID string) (
 			Message:        "Response JSON Error",
 			Method:         "GetThread",
 			RawError:       err.Error(),
+			Details:        &openAiError.ThreadsError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+				OpenStatusCode: openAiErrorCode.ThreadGetErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetThread",
+				RawError:       err.Error(),
+				Details:        &openAiError.ThreadsError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.ThreadsError]{
+			OpenStatusCode: openAiErrorCode.ThreadGetOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetThread",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.ThreadsError{},
 		}
 	}

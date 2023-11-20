@@ -85,8 +85,29 @@ func (openAiFileImpl *OpenAiFileImpl) GetFileList(
 		}
 	}
 
-	return result, nil
+	if result.Object == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.FileError]{
+				OpenStatusCode: openAiErrorCode.GetFileListErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetFileList",
+				RawError:       err.Error(),
+				Details:        &openAiError.FileError{},
+			}
+		}
 
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileListOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetFileList",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.FileError{},
+		}
+	}
+
+	return result, nil
 }
 
 func (openAiFileImpl *OpenAiFileImpl) UploadFile(
@@ -203,6 +224,28 @@ func (openAiFileImpl *OpenAiFileImpl) UploadFile(
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.FileError]{
+				OpenStatusCode: openAiErrorCode.UploadFileErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "UploadFile",
+				RawError:       err.Error(),
+				Details:        &openAiError.FileError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.UploadFileOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "UploadFile",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.FileError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -267,6 +310,28 @@ func (openAiFileImpl *OpenAiFileImpl) DeleteFile(fileID string) (
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.FileError]{
+				OpenStatusCode: openAiErrorCode.DeleteFileErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "DeleteFile",
+				RawError:       err.Error(),
+				Details:        &openAiError.FileError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.DeleteFileOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "DeleteFile",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.FileError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -325,6 +390,28 @@ func (openAiFileImpl *OpenAiFileImpl) GetFile(fileID string) (
 		}
 	}
 
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.FileError]{
+				OpenStatusCode: openAiErrorCode.GetFileErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetFile",
+				RawError:       err.Error(),
+				Details:        &openAiError.FileError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetFile",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.FileError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -370,6 +457,28 @@ func (openAiFileImpl *OpenAiFileImpl) GetFileContent(fileID string) (string, err
 			Message:        "Read Response Body Error",
 			Method:         "GetFileContent",
 			RawError:       err.Error(),
+			Details:        &openAiError.FileError{},
+		}
+	}
+
+	if len(body) == 0 {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return "", &openAiError.OpenAiError[openAiError.FileError]{
+				OpenStatusCode: openAiErrorCode.GetFileContentErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetFileContent",
+				RawError:       err.Error(),
+				Details:        &openAiError.FileError{},
+			}
+		}
+
+		return "", &openAiError.OpenAiError[openAiError.FileError]{
+			OpenStatusCode: openAiErrorCode.GetFileContentOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetFileContent",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.FileError{},
 		}
 	}
