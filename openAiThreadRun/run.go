@@ -723,7 +723,7 @@ func (threadRunImpl *ThreadRunImpl) CreateThreadAndRun(
 func (threadRunImpl *ThreadRunImpl) GetRunStep(
 	threadID, runID, stepID string,
 ) (
-	*openAiType.OpenAiRunObject,
+	*openAiType.OpenAiRunStepObject,
 	error,
 ) {
 	request, err := http.NewRequest(
@@ -777,7 +777,7 @@ func (threadRunImpl *ThreadRunImpl) GetRunStep(
 		}
 	}
 
-	result := &openAiType.OpenAiRunObject{}
+	result := &openAiType.OpenAiRunStepObject{}
 	err = json.Unmarshal(body, result)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.RunAssistantError]{
