@@ -25,7 +25,7 @@ func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile(
 	requestInfo, err := json.Marshal(createRequest)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantCreateRequestJSONError,
+			OpenStatusCode: openAiErrorCode.AssistantFileCreateRequestJSONError,
 			Message:        "Request Marshal JSON Error",
 			Method:         "CreateAssistantFile",
 			RawError:       err.Error(),
@@ -41,7 +41,7 @@ func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile(
 
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantCreateNewRequestError,
+			OpenStatusCode: openAiErrorCode.AssistantFileCreateNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "CreateAssistantFile",
 			RawError:       err.Error(),
@@ -58,7 +58,7 @@ func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile(
 	response, err := assistantFileClient.Do(request)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantCreateSendHTTPRequestError,
+			OpenStatusCode: openAiErrorCode.AssistantFileCreateSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "CreateAssistantFile",
 			RawError:       err.Error(),
@@ -72,7 +72,7 @@ func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile(
 
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantCreateReadResponseBodyError,
+			OpenStatusCode: openAiErrorCode.AssistantFileCreateReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "CreateAssistantFile",
 			RawError:       err.Error(),
@@ -84,10 +84,32 @@ func (assistantFileImpl *AssistantFileImpl) CreateAssistantFile(
 	err = json.Unmarshal(body, result)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantCreateResponseJSONError,
+			OpenStatusCode: openAiErrorCode.AssistantFileCreateResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "CreateAssistantFile",
 			RawError:       err.Error(),
+			Details:        &openAiError.AssistantFileError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
+				OpenStatusCode: openAiErrorCode.AssistantFileCreateErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "CreateAssistantFile",
+				RawError:       err.Error(),
+				Details:        &openAiError.AssistantFileError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
+			OpenStatusCode: openAiErrorCode.AssistantFileCreateOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "CreateAssistantFile",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.AssistantFileError{},
 		}
 	}
@@ -114,7 +136,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFile(
 
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantGetListNewRequestError,
+			OpenStatusCode: openAiErrorCode.AssistantFileGetNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "GetAssistantFile",
 			RawError:       err.Error(),
@@ -131,7 +153,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFile(
 	response, err := assistantFileClient.Do(request)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantGetListSendHTTPRequestError,
+			OpenStatusCode: openAiErrorCode.AssistantFileGetSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "GetAssistantFile",
 			RawError:       err.Error(),
@@ -144,7 +166,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFile(
 
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantGetListReadResponseBodyError,
+			OpenStatusCode: openAiErrorCode.AssistantFileGetReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "GetAssistantFile",
 			RawError:       err.Error(),
@@ -156,10 +178,32 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFile(
 	err = json.Unmarshal(body, result)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantGetListResponseJSONError,
+			OpenStatusCode: openAiErrorCode.AssistantFileGetResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "GetAssistantFile",
 			RawError:       err.Error(),
+			Details:        &openAiError.AssistantFileError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
+				OpenStatusCode: openAiErrorCode.AssistantFileGetErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetAssistantFile",
+				RawError:       err.Error(),
+				Details:        &openAiError.AssistantFileError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
+			OpenStatusCode: openAiErrorCode.AssistantFileGetOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetAssistantFile",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.AssistantFileError{},
 		}
 	}
@@ -186,7 +230,7 @@ func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile(
 
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantDeleteNewRequestError,
+			OpenStatusCode: openAiErrorCode.AssistantFileDeleteNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "DeleteAssistantFile",
 			RawError:       err.Error(),
@@ -203,7 +247,7 @@ func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile(
 	response, err := assistantFileDeleteClient.Do(request)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantDeleteSendHTTPRequestError,
+			OpenStatusCode: openAiErrorCode.AssistantFileDeleteSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "DeleteAssistantFile",
 			RawError:       err.Error(),
@@ -216,7 +260,7 @@ func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile(
 
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantDeleteReadResponseBodyError,
+			OpenStatusCode: openAiErrorCode.AssistantFileDeleteReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "DeleteAssistantFile",
 			RawError:       err.Error(),
@@ -228,10 +272,32 @@ func (assistantFileImpl *AssistantFileImpl) DeleteAssistantFile(
 	err = json.Unmarshal(body, result)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantDeleteResponseJSONError,
+			OpenStatusCode: openAiErrorCode.AssistantFileDeleteResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "DeleteAssistantFile",
 			RawError:       err.Error(),
+			Details:        &openAiError.AssistantFileError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
+				OpenStatusCode: openAiErrorCode.AssistantFileDeleteErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "DeleteAssistantFile",
+				RawError:       err.Error(),
+				Details:        &openAiError.AssistantFileError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
+			OpenStatusCode: openAiErrorCode.AssistantFileDeleteOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "DeleteAssistantFile",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.AssistantFileError{},
 		}
 	}
@@ -263,7 +329,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList(
 
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantGetListNewRequestError,
+			OpenStatusCode: openAiErrorCode.AssistantFileGetListNewRequestError,
 			Message:        "NewRequest Error",
 			Method:         "GetAssistantFileList",
 			RawError:       err.Error(),
@@ -280,7 +346,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList(
 	response, err := assistantClient.Do(request)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantGetListSendHTTPRequestError,
+			OpenStatusCode: openAiErrorCode.AssistantFileGetListSendHTTPRequestError,
 			Message:        "Send Http Request Error",
 			Method:         "GetAssistantFileList",
 			RawError:       err.Error(),
@@ -293,7 +359,7 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList(
 
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantGetListReadResponseBodyError,
+			OpenStatusCode: openAiErrorCode.AssistantFileGetListReadResponseBodyError,
 			Message:        "Read Response Body Error",
 			Method:         "GetAssistantFileList",
 			RawError:       err.Error(),
@@ -305,10 +371,32 @@ func (assistantFileImpl *AssistantFileImpl) GetAssistantFileList(
 	err = json.Unmarshal(body, result)
 	if err != nil {
 		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
-			OpenStatusCode: openAiErrorCode.AssistantGetListResponseJSONError,
+			OpenStatusCode: openAiErrorCode.AssistantFileGetListResponseJSONError,
 			Message:        "Response JSON Error",
 			Method:         "GetAssistantFileList",
 			RawError:       err.Error(),
+			Details:        &openAiError.AssistantFileError{},
+		}
+	}
+
+	if result.FirstID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
+				OpenStatusCode: openAiErrorCode.AssistantFileGetListErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetAssistantFileList",
+				RawError:       err.Error(),
+				Details:        &openAiError.AssistantFileError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.AssistantFileError]{
+			OpenStatusCode: openAiErrorCode.AssistantFileGetListOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetAssistantFileList",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.AssistantFileError{},
 		}
 	}

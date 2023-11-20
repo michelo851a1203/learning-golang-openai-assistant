@@ -85,6 +85,28 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFileList(
 
 	}
 
+	if result.FirstID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
+				OpenStatusCode: openAiErrorCode.GetMessageFileListGetErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetMessageFileList",
+				RawError:       err.Error(),
+				Details:        &openAiError.MessagesFileError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
+			OpenStatusCode: openAiErrorCode.GetMessageFileListGetOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetMessageFileList",
+			RawError:       errorResult.String(),
+			Details:        &openAiError.MessagesFileError{},
+		}
+	}
+
 	return result, nil
 }
 
@@ -156,6 +178,28 @@ func (MessageFileImpl *MessageFileImpl) GetMessageFile(
 			Message:        "Response JSON Error",
 			Method:         "GetMessageFile",
 			RawError:       err.Error(),
+			Details:        &openAiError.MessagesFileError{},
+		}
+	}
+
+	if result.ID == "" {
+		errorResult := &openAiError.OpenAiNativeApiError{}
+		err = json.Unmarshal(body, errorResult)
+		if err != nil {
+			return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
+				OpenStatusCode: openAiErrorCode.GetMessageFileGetErrorResponseJSONError,
+				Message:        "Error Response JSON Error",
+				Method:         "GetMessageFile",
+				RawError:       err.Error(),
+				Details:        &openAiError.MessagesFileError{},
+			}
+		}
+
+		return nil, &openAiError.OpenAiError[openAiError.MessagesFileError]{
+			OpenStatusCode: openAiErrorCode.GetMessageFileGetOpenAIError,
+			Message:        "OpenAI Response Error",
+			Method:         "GetMessageFile",
+			RawError:       errorResult.String(),
 			Details:        &openAiError.MessagesFileError{},
 		}
 	}
