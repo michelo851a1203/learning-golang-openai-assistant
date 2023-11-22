@@ -19,14 +19,14 @@ type OpenAiFileImpl struct {
 }
 
 func (openAiFileImpl *OpenAiFileImpl) GetFileList(
-	purpose string,
+	purpose openAiFilePurpose.PurposeStatus,
 ) (
 	*openAiType.ListFileResponse,
 	error,
 ) {
 	queryString := ""
 	if purpose != "" {
-		queryString = "?purpose=" + purpose
+		queryString = "?purpose=" + string(purpose)
 	}
 
 	request, err := http.NewRequest(
